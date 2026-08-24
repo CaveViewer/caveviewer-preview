@@ -22,6 +22,29 @@ domain; its public URL is <https://caveviewer.github.io/caveviewer-preview/>.
 This repository is the source of truth for the preview. Do not use it to
 replace or alter the existing production Pages deployment.
 
+## Repository protections
+
+`main` is protected by the active `protect-main` GitHub ruleset. Changes must
+arrive through a pull request that is current with `main`; direct pushes,
+force-pushes, and deletion are blocked. An approving review is not currently
+required, but the latest pull-request commit must pass both required checks:
+
+- `Static site contracts`
+- `Browser site checks`
+
+GitHub Actions use read-only default permissions. The repository allows only
+the approved, full-SHA action revisions used by its workflows, and requires
+full-SHA action pinning. Dependabot proposes bounded weekly updates for those
+actions and the isolated browser-test dependency. When accepting an action
+update, also add its reviewed full SHA to the repository's approved Actions
+list before merging the Dependabot pull request.
+
+The release chooser accepts only the official
+`https://github.com/CaveViewer/CaveViewer` release repository, a three-part
+numeric version, and the four expected version-matched package names. This
+keeps the public preview from silently redirecting downloads to an unrelated
+release source.
+
 ## Local review
 
 From this repository's root:

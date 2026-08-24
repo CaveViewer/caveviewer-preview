@@ -1,12 +1,15 @@
 """Contracts for the public static CaveViewer site preview."""
 
 import json
+import importlib.util
 import re
 import subprocess
 import sys
 from html.parser import HTMLParser
 from pathlib import Path
 from urllib.parse import urlparse
+
+import pytest
 
 
 REPOSITORY_ROOT = Path(__file__).resolve().parents[2]
@@ -42,6 +45,17 @@ def _html_pages() -> list[Path]:
     return sorted(SITE_ROOT.glob("*.html"))
 
 
+def _sync_release_module():
+    spec = importlib.util.spec_from_file_location(
+        "sync_release", REPOSITORY_ROOT / "scripts" / "sync_release.py"
+    )
+    assert spec is not None
+    assert spec.loader is not None
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    return module
+
+
 def test_pages_workflow_deploys_only_the_static_site_artifact() -> None:
     workflow = (REPOSITORY_ROOT / ".github/workflows/pages.yml").read_text(
         encoding="utf-8"
@@ -52,6 +66,81 @@ def test_pages_workflow_deploys_only_the_static_site_artifact() -> None:
     assert "cp -R assets storage _site/" in workflow
     assert "github.ref == 'refs/heads/main'" in workflow
     assert not (SITE_ROOT / "CNAME").exists()
+
+
+def test_ci_and_dependency_workflows_keep_the_preview_supply_chain_bounded() -> None:
+    checks = (REPOSITORY_ROOT / ".github/workflows/site-checks.yml").read_text(
+        encoding="utf-8"
+    )
+    dependabot = (REPOSITORY_ROOT / ".github/dependabot.yml").read_text(
+        encoding="utf-8"
+    )
+
+    assert "pull_request:" in checks
+    assert "workflow_dispatch:" in checks
+    assert "branches:\n      - main" in checks
+    assert "permissions:\n  contents: read" in checks
+    assert "cancel-in-progress: true" in checks
+    assert "name: Static site contracts" in checks
+    assert "name: Browser site checks" in checks
+    assert "pytest==8.4.2" in checks
+    assert "npm ci --ignore-scripts" in checks
+    assert "playwright install --with-deps chromium" in checks
+    assert "secrets:" not in checks
+
+    for workflow_path in sorted((REPOSITORY_ROOT / ".github/workflows").glob("*.yml")):
+        workflow = workflow_path.read_text(encoding="utf-8")
+        action_references = re.findall(r"uses:\s+([^\s#]+)", workflow)
+        assert action_references, workflow_path
+        for action in action_references:
+            assert re.fullmatch(r"[\w.-]+/[\w.-]+@[0-9a-f]{40}", action), (
+                workflow_path,
+                action,
+            )
+
+    assert 'package-ecosystem: "github-actions"' in dependabot
+    assert 'package-ecosystem: "npm"' in dependabot
+    assert 'directory: "/tests/browser"' in dependabot
+    assert 'interval: "weekly"' in dependabot
+    assert "default-days: 7" in dependabot
+    assert "open-pull-requests-limit: 2" in dependabot
+    assert "open-pull-requests-limit: 1" in dependabot
+
+
+@pytest.mark.parametrize(
+    ("field", "value", "error"),
+    (
+        (
+            "repository",
+            "https://example.invalid/CaveViewer",
+            "official CaveViewer GitHub repository",
+        ),
+        ("channel", "Nightly", "Preview or Stable"),
+        ("version", "1.0.92-preview", "exactly three decimal components"),
+    ),
+)
+def test_release_manifest_rejects_untrusted_release_coordinates(
+    tmp_path: Path, field: str, value: str, error: str
+) -> None:
+    sync_release = _sync_release_module()
+    release = json.loads((SITE_ROOT / "assets/data/release.json").read_text())
+    release[field] = value
+    manifest_path = tmp_path / "release.json"
+    manifest_path.write_text(json.dumps(release), encoding="utf-8")
+
+    with pytest.raises(ValueError, match=error):
+        sync_release.load_release_data(manifest_path)
+
+
+def test_release_manifest_rejects_noncanonical_package_names(tmp_path: Path) -> None:
+    sync_release = _sync_release_module()
+    release = json.loads((SITE_ROOT / "assets/data/release.json").read_text())
+    release["platforms"]["windows"]["artifact"] = "other-installer.exe"
+    manifest_path = tmp_path / "release.json"
+    manifest_path.write_text(json.dumps(release), encoding="utf-8")
+
+    with pytest.raises(ValueError, match="official, version-matched"):
+        sync_release.load_release_data(manifest_path)
 
 
 def test_preview_contains_only_the_canonical_public_routes() -> None:

@@ -17,6 +17,9 @@ RELEASE_DATA_PATH = REPOSITORY_ROOT / "assets/data/release.json"
 INDEX_PATH = REPOSITORY_ROOT / "index.html"
 START_MARKER = "<!-- release-picker:start -->"
 END_MARKER = "<!-- release-picker:end -->"
+OFFICIAL_RELEASE_REPOSITORY = "https://github.com/CaveViewer/CaveViewer"
+RELEASE_VERSION_PATTERN = re.compile(r"\d+\.\d+\.\d+")
+RELEASE_CHANNELS = {"Preview", "Stable"}
 
 
 def _text(value: object) -> str:
@@ -57,8 +60,20 @@ def load_release_data(path: Path = RELEASE_DATA_PATH) -> dict[str, Any]:
     release = _require_mapping(release, "release")
     if release.get("schema_version") != 1:
         raise ValueError("release.schema_version must be 1")
-    for key in ("product", "repository", "channel", "version"):
-        _require_text(release, key, "release")
+    product = _require_text(release, "product", "release")
+    repository = _require_text(release, "repository", "release")
+    channel = _require_text(release, "channel", "release")
+    version = _require_text(release, "version", "release")
+    if product != "CaveViewer":
+        raise ValueError("release.product must be CaveViewer")
+    if repository != OFFICIAL_RELEASE_REPOSITORY:
+        raise ValueError(
+            "release.repository must be the official CaveViewer GitHub repository"
+        )
+    if channel not in RELEASE_CHANNELS:
+        raise ValueError("release.channel must be Preview or Stable")
+    if not RELEASE_VERSION_PATTERN.fullmatch(version):
+        raise ValueError("release.version must contain exactly three decimal components")
 
     chooser = _require_mapping(release.get("chooser"), "release.chooser")
     for key in (
@@ -100,8 +115,17 @@ def load_release_data(path: Path = RELEASE_DATA_PATH) -> dict[str, Any]:
             if key == "artifact":
                 artifacts.add(value)
 
-    if len(artifacts) != 4:
-        raise ValueError("release artifacts must be unique")
+    expected_artifacts = {
+        f"CaveViewer-{version}-windows.exe",
+        f"CaveViewer-{version}-x86_64.AppImage",
+        f"CaveViewer-{version}-macos-arm64.dmg",
+        f"CaveViewer-{version}-macos-x86_64.dmg",
+    }
+    if artifacts != expected_artifacts:
+        raise ValueError(
+            "release artifacts must be the four official, version-matched "
+            "CaveViewer packages"
+        )
     return release
 
 
