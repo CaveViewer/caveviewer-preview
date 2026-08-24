@@ -2,22 +2,24 @@
 
 This repository is the public, static preview of the forthcoming CaveViewer
 website. It is published separately from the production site at
-<https://www.caveviewer.com/>, which this repository cannot change.
+<https://www.caveviewer.com/>, which this repository cannot change. It has no
+server application, persistent storage, or database.
 
 The preview is intentionally marked `noindex` while it is being reviewed. Its
 Contact page keeps the approved FormSubmit action and honeypot; do not add
-`_captcha=false`, which opts out of FormSubmit's default CAPTCHA.
+`_captcha=false`, which opts out of FormSubmit's default CAPTCHA. FormSubmit's
+default CAPTCHA remains enabled. CaveViewer stores no contact data and runs no
+contact backend or database.
 
 ## Publishing
 
-GitHub Pages deploys this repository's root directory only when `main` changes
-or when the workflow is manually run from `main`. It has no custom domain; the
-expected public URL is <https://caveviewer.github.io/caveviewer-preview/>.
+GitHub Pages deploys only a prepared `_site/` artifact when `main` changes or
+when the workflow is manually run from `main`. This path is an exported static
+artifact: it contains the five HTML pages plus `assets/` and `storage/`, not
+the repository's tests, scripts, or Git metadata. The site has no custom
+domain; its public URL is <https://caveviewer.github.io/caveviewer-preview/>.
 
-The source of truth remains `website-preview/` in
-[`CaveViewer/CaveViewer`](https://github.com/CaveViewer/CaveViewer). Treat this
-repository as a deliberate public snapshot: update the source repository,
-review it, then export a new snapshot here. Do not use this repository to
+This repository is the source of truth for the preview. Do not use it to
 replace or alter the existing production Pages deployment.
 
 ## Local review
@@ -29,3 +31,44 @@ python3 -m http.server 4173 --bind 127.0.0.1
 ```
 
 Open <http://127.0.0.1:4173/>.
+
+## Maintain the release chooser
+
+`assets/data/release.json` is the maintained release source. After changing it,
+run:
+
+```bash
+python3 scripts/sync_release.py
+python3 scripts/sync_release.py --check
+```
+
+## Validate changes
+
+With `pytest` available, run the static contracts from the repository root:
+
+```bash
+python3 -m pytest tests/unit/test_site.py -q
+```
+
+The browser checks live in `tests/browser/`. They reuse a local server or can
+target the public site without submitting the Contact form:
+
+```bash
+cd tests/browser
+npm ci
+npx playwright install chromium
+npm test
+```
+
+## Image delivery budget
+
+Modern browsers select preferred WebP images through `picture`/`srcset` or CSS
+`image-set`, while original PNG and JPEG assets remain fallbacks. The markup
+supplies intrinsic dimensions to reserve layout space before images load.
+
+| Route | Preferred modern candidates | Budget |
+| --- | --- | ---: |
+| Home | `ginnie1.webp`, `software-hero-cave-strokes-full.webp` | 1.30 MB |
+| Features | Rendering, Map Library, and Capture WebP images | 0.40 MB |
+| Advantage | Import and Streaming preference WebP images | 0.12 MB |
+| Team | Six responsive portrait WebP images | 0.80 MB |
