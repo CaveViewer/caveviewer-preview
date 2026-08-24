@@ -355,31 +355,43 @@ test("Team cards remain static presentational articles on hover", async ({ page 
     expect(beforeHover.transition).toBe("all");
 });
 
-test("Magic Mr_V uses a plain black square instead of a profile photo", async ({ page }) => {
+test("Magic Mr_V has a picture-free Team card that stays aligned with the grid", async ({ page }) => {
+    await page.setViewportSize({ width: 1440, height: 900 });
     await page.goto("about.html", { waitUntil: "networkidle" });
 
     const card = page.locator(".about-person").filter({
         has: page.getByRole("heading", { name: "Magic Mr_V", exact: true }),
     });
-    const placeholder = card.locator(".about-person__media--blank");
 
     await expect(card).toHaveCount(1);
-    await expect(placeholder).toHaveCount(1);
-    await expect(card.locator("img")).toHaveCount(0);
+    await expect(card).toHaveClass(/about-person--text-only/);
+    await expect(card.locator("img, picture, .about-person__media")).toHaveCount(0);
 
-    const style = await placeholder.evaluate(element => {
-        const computed = getComputedStyle(element);
-        const bounds = element.getBoundingClientRect();
+    const layout = await page.evaluate(() => {
+        const magicCard = document.querySelector(".about-person--text-only");
+        const referenceCard = [...document.querySelectorAll(".about-person")].find(
+            card => card.querySelector("h2")?.textContent === "Brian Deatherage",
+        );
+
+        if (!magicCard || !referenceCard) {
+            throw new Error("Expected Team cards were not found");
+        }
+
+        const magicBounds = magicCard.getBoundingClientRect();
+        const referenceBounds = referenceCard.getBoundingClientRect();
+        const magicCaptionBounds = magicCard.querySelector(".about-person__caption").getBoundingClientRect();
+        const referenceCaptionBounds = referenceCard.querySelector(".about-person__caption").getBoundingClientRect();
 
         return {
-            backgroundColor: computed.backgroundColor,
-            height: bounds.height,
-            width: bounds.width,
+            magicCaptionBottom: magicCaptionBounds.bottom,
+            magicHeight: magicBounds.height,
+            referenceCaptionBottom: referenceCaptionBounds.bottom,
+            referenceHeight: referenceBounds.height,
         };
     });
 
-    expect(style.backgroundColor).toBe("rgb(0, 0, 0)");
-    expect(style.width).toBeCloseTo(style.height, 1);
+    expect(layout.magicHeight).toBeCloseTo(layout.referenceHeight, 1);
+    expect(layout.magicCaptionBottom).toBeCloseTo(layout.referenceCaptionBottom, 1);
 });
 
 test("modern browsers choose responsive images with reserved layout geometry", async ({ page }) => {

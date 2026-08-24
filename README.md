@@ -95,4 +95,4 @@ supplies intrinsic dimensions to reserve layout space before images load.
 | Home | `ginnie1.webp`, `software-hero-cave-strokes-full.webp` | 1.30 MB |
 | Features | Rendering, Map Library, and Capture WebP images | 0.40 MB |
 | Why CaveViewer | Import and Streaming preference WebP images | 0.12 MB |
-| Team | Five responsive portrait WebP images plus a black placeholder | 0.80 MB |
+| Team | Five responsive portrait WebP images | 0.80 MB |

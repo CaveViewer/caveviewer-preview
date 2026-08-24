@@ -56,7 +56,7 @@
     color: var(--cyan);
     font-weight: var(--display-accent-weight);
 }
-/* Team cards — six members as a balanced 3 × 2 grid, responsive below -- */
+/* Team cards — a responsive grid of team members. ---------------------- */
 .about-team-grid {
     display: grid;
     grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -71,6 +71,20 @@
     color: inherit;
     text-decoration: none;
 }
+.about-person--text-only {
+    justify-content: flex-end;
+    min-height: clamp(190px, 22vw, 320px);
+    padding: clamp(22px, 2.5vw, 36px) clamp(22px, 2.5vw, 36px) 0;
+    outline: 1px solid rgba(145,211,235,.12);
+    outline-offset: -1px;
+    background:
+        radial-gradient(circle at 78% 18%, rgba(81,199,243,.08), transparent 34%),
+        linear-gradient(155deg, #0a1921 0%, #061118 58%, #03090d 100%);
+}
+.about-person--text-only .about-person__caption {
+    flex: 0 0 auto;
+    padding: 0;
+}
 .about-person__media {
     position: relative;
     aspect-ratio: 4 / 5.15;
@@ -79,13 +93,6 @@
     background:
         radial-gradient(circle at 68% 24%, rgba(81,199,243,.10), transparent 24%),
         linear-gradient(155deg, #0a1921 0%, #061118 58%, #03090d 100%);
-}
-.page-about .about-person__media.about-person__media--blank {
-    aspect-ratio: 1;
-    background: #000;
-}
-.page-about .about-person__media.about-person__media--blank::after {
-    content: none;
 }
 .about-person__media::after {
     content: "";

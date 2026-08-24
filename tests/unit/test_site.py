@@ -553,7 +553,7 @@ def test_about_team_captions_use_compact_spacing() -> None:
     assert ".about-person__affiliation {\n    margin: 5px 0 0;" in styles
 
 
-def test_about_team_photos_and_placeholder_use_the_intended_treatment() -> None:
+def test_about_team_photos_and_text_only_profile_use_the_intended_treatment() -> None:
     about = (SITE_ROOT / "about.html").read_text(encoding="utf-8")
     styles = (SITE_ROOT / "assets/css/about.css").read_text(encoding="utf-8")
 
@@ -561,11 +561,21 @@ def test_about_team_photos_and_placeholder_use_the_intended_treatment() -> None:
     assert 'alt="Brian Deatherage" style="--photo-position: 50% 0%;"' in about
     assert 'alt="Zsolt Szabo" style="--photo-position: 50% 40%;"' in about
     assert 'alt="Filipp R. Loginova" style="--photo-position: 50% 45%;"' in about
-    assert 'class="about-person__media about-person__media--blank" aria-hidden="true"' in about
+    text_only_start = about.index('<article class="about-person about-person--text-only" data-reveal>')
+    text_only_end = about.index("</article>", text_only_start)
+    text_only_profile = about[text_only_start:text_only_end]
+
+    assert "Magic Mr_V" in text_only_profile
+    assert "Co-Creator / Chief Technology Wizard" in text_only_profile
+    assert "<picture>" not in text_only_profile
+    assert "<img" not in text_only_profile
+    assert about.index("<h2>Zsolt Szabo</h2>") < about.index("<h2>Magic Mr_V</h2>") < about.index("<h2>Filipp R. Loginova</h2>")
+    assert "about-person__media--blank" not in about
     assert "magic-mr-v-cat-hacker" not in about
     assert "object-position: var(--photo-position, 50% 20%);" in styles
-    assert ".page-about .about-person__media.about-person__media--blank {\n    aspect-ratio: 1;\n    background: #000;\n}" in styles
-    assert ".page-about .about-person__media.about-person__media--blank::after {\n    content: none;\n}" in styles
+    assert "about-person__media--blank" not in styles
+    assert ".about-person--text-only {\n    justify-content: flex-end;\n    min-height: clamp(190px, 22vw, 320px);" in styles
+    assert ".about-person--text-only .about-person__caption {\n    flex: 0 0 auto;\n    padding: 0;\n}" in styles
     assert "@media (min-width: 1181px) {\n    .about-person__media {\n        aspect-ratio: 4 / 3;" in styles
 
 
@@ -677,7 +687,7 @@ def test_image_delivery_uses_responsive_webp_and_reserves_layout_space() -> None
     assert "## Image delivery budget" in readme
     assert "picture`/`srcset`" in readme
     assert "`image-set`" in readme
-    assert "Five responsive portrait WebP images plus a black placeholder" in readme
+    assert "Five responsive portrait WebP images" in readme
 
     assert "ginnie1.webp" in home_styles
     assert "software-hero-cave-strokes-full.webp" in home_styles
