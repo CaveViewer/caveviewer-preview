@@ -22,12 +22,13 @@ domain; its public URL is <https://caveviewer.github.io/caveviewer-preview/>.
 This repository is the source of truth for the preview. Do not use it to
 replace or alter the existing production Pages deployment.
 
-## Repository protections
+## Contributing and checks
 
-`main` is protected by the active `protect-main` GitHub ruleset. Changes must
-arrive through a pull request that is current with `main`; direct pushes,
-force-pushes, and deletion are blocked. An approving review is not currently
-required, but the latest pull-request commit must pass both required checks:
+Contributors with write access can push changes directly to `main`, and those
+changes can publish through the Pages workflow. Pull requests remain welcome,
+but they are not required to publish the preview. The following checks continue
+to run for pull requests and changes to `main`; they provide automated feedback
+without blocking publication:
 
 - `Static site contracts`
 - `Browser site checks`
