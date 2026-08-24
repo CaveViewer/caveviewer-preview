@@ -80,6 +80,13 @@
         radial-gradient(circle at 68% 24%, rgba(81,199,243,.10), transparent 24%),
         linear-gradient(155deg, #0a1921 0%, #061118 58%, #03090d 100%);
 }
+.page-about .about-person__media.about-person__media--blank {
+    aspect-ratio: 1;
+    background: #000;
+}
+.page-about .about-person__media.about-person__media--blank::after {
+    content: none;
+}
 .about-person__media::after {
     content: "";
     position: absolute;

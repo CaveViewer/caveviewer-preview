@@ -3,7 +3,7 @@ import { expect, test } from "@playwright/test";
 const canonicalPages = [
     { name: "Home", path: "index.html", content: "Explore what" },
     { name: "Features", path: "features.html", content: "View Huge Maps" },
-    { name: "Advantage", path: "advantage.html", content: "Flexible large map support" },
+    { name: "Why CaveViewer", path: "advantage.html", content: "Flexible large map support" },
     { name: "Team", path: "about.html", content: "Magic Mr_V" },
     { name: "Contact", path: "contact.html", content: "Contact Us" },
 ];
@@ -82,7 +82,7 @@ test("navigation current and focus states have non-color indicators", async ({ p
 
     const navigation = page.getByRole("navigation", { name: "Primary navigation" });
     const currentLink = navigation.getByRole("link", { name: "Features" });
-    const focusedLink = navigation.getByRole("link", { name: "Advantage" });
+    const focusedLink = navigation.getByRole("link", { name: "Why CaveViewer" });
 
     await page.keyboard.press("Tab");
     await page.keyboard.press("Tab");
@@ -111,7 +111,7 @@ test("the mobile navigation is keyboard-operable", async ({ page }) => {
     await expect(navigation.getByRole("link", { name: "Features" })).toBeFocused();
 
     await page.keyboard.press("Tab");
-    await expect(navigation.getByRole("link", { name: "Advantage" })).toBeFocused();
+    await expect(navigation.getByRole("link", { name: "Why CaveViewer" })).toBeFocused();
     await page.keyboard.press("Tab");
     await expect(navigation.getByRole("link", { name: "Team" })).toBeFocused();
 
@@ -139,7 +139,7 @@ test("the shared header switches cleanly between inline and compact navigation",
     await expectNoHorizontalOverflow(page);
 });
 
-test("the Advantage link reaches practical, readable map guidance", async ({ page }) => {
+test("the Why CaveViewer link reaches practical, readable map guidance", async ({ page }) => {
     await page.setViewportSize({ width: 1440, height: 900 });
     await page.goto("features.html", { waitUntil: "networkidle" });
     await expect(page.getByRole("heading", { name: "Record & Share Dives" })).toBeVisible();
@@ -148,7 +148,7 @@ test("the Advantage link reaches practical, readable map guidance", async ({ pag
     await page.goto("index.html", { waitUntil: "networkidle" });
 
     await page.getByRole("navigation", { name: "Primary navigation" })
-        .getByRole("link", { name: "Advantage" })
+        .getByRole("link", { name: "Why CaveViewer" })
         .click();
     await expect(page).toHaveURL(/advantage\.html$/);
 
@@ -353,6 +353,33 @@ test("Team cards remain static presentational articles on hover", async ({ page 
     expect(beforeHover).toEqual(afterHover);
     expect(beforeHover.transform).toBe("none");
     expect(beforeHover.transition).toBe("all");
+});
+
+test("Magic Mr_V uses a plain black square instead of a profile photo", async ({ page }) => {
+    await page.goto("about.html", { waitUntil: "networkidle" });
+
+    const card = page.locator(".about-person").filter({
+        has: page.getByRole("heading", { name: "Magic Mr_V", exact: true }),
+    });
+    const placeholder = card.locator(".about-person__media--blank");
+
+    await expect(card).toHaveCount(1);
+    await expect(placeholder).toHaveCount(1);
+    await expect(card.locator("img")).toHaveCount(0);
+
+    const style = await placeholder.evaluate(element => {
+        const computed = getComputedStyle(element);
+        const bounds = element.getBoundingClientRect();
+
+        return {
+            backgroundColor: computed.backgroundColor,
+            height: bounds.height,
+            width: bounds.width,
+        };
+    });
+
+    expect(style.backgroundColor).toBe("rgb(0, 0, 0)");
+    expect(style.width).toBeCloseTo(style.height, 1);
 });
 
 test("modern browsers choose responsive images with reserved layout geometry", async ({ page }) => {

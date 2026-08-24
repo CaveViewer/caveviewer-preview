@@ -348,7 +348,7 @@ def test_pages_expose_skip_paths_headings_and_noncolor_navigation_cues() -> None
     styles = (SITE_ROOT / "assets/css/global.css").read_text(encoding="utf-8")
     expected_headings = {
         "features.html": '<h1 class="sr-only">CaveViewer features</h1>',
-        "advantage.html": '<h1 class="sr-only">CaveViewer advantages</h1>',
+        "advantage.html": '<h1 class="sr-only">Why CaveViewer</h1>',
         "about.html": '<h1 class="sr-only">CaveViewer team</h1>',
     }
 
@@ -409,10 +409,10 @@ def test_preview_uses_one_header_and_has_no_member_profile_routes() -> None:
         assert 'href="features.html">Features</a>' in text or (
             'href="features.html" aria-current="page">Features</a>' in text
         )
-        assert 'href="advantage.html">Advantage</a>' in text or (
-            'href="advantage.html" aria-current="page">Advantage</a>' in text
+        assert 'href="advantage.html">Why CaveViewer</a>' in text or (
+            'href="advantage.html" aria-current="page">Why CaveViewer</a>' in text
         )
-        assert text.index(">Features</a>") < text.index(">Advantage</a>") < text.index(">Team</a>")
+        assert text.index(">Features</a>") < text.index(">Why CaveViewer</a>") < text.index(">Team</a>")
         assert 'href="about.html">Team</a>' in text or (
             'href="about.html" aria-current="page">Team</a>' in text
         )
@@ -450,7 +450,7 @@ def test_preview_uses_one_header_and_has_no_member_profile_routes() -> None:
     assert "Keep more cave within reach." not in features
 
     advantage = (SITE_ROOT / "advantage.html").read_text(encoding="utf-8")
-    assert 'href="advantage.html" aria-current="page">Advantage</a>' in advantage
+    assert 'href="advantage.html" aria-current="page">Why CaveViewer</a>' in advantage
     assert ">Flexible large map support<" in advantage
 
 
@@ -460,7 +460,7 @@ def test_advantage_section_uses_the_real_preferences_and_capabilities() -> None:
     styles = (SITE_ROOT / "assets/css/features.css").read_text(encoding="utf-8")
 
     assert '<section class="advantages-page" id="advantage"' in advantage
-    assert '<a href="advantage.html" aria-current="page">Advantage</a>' in advantage
+    assert '<a href="advantage.html" aria-current="page">Why CaveViewer</a>' in advantage
     assert advantage.count("feature-section--advantage") == 3
     assert features.count('<section class="feature-section"') == 3
     assert "advantages-page" not in features
@@ -553,15 +553,19 @@ def test_about_team_captions_use_compact_spacing() -> None:
     assert ".about-person__affiliation {\n    margin: 5px 0 0;" in styles
 
 
-def test_about_team_photos_use_taller_frames_and_focal_points() -> None:
+def test_about_team_photos_and_placeholder_use_the_intended_treatment() -> None:
     about = (SITE_ROOT / "about.html").read_text(encoding="utf-8")
     styles = (SITE_ROOT / "assets/css/about.css").read_text(encoding="utf-8")
 
-    assert about.count("--photo-position:") == 6
+    assert about.count("--photo-position:") == 5
     assert 'alt="Brian Deatherage" style="--photo-position: 50% 0%;"' in about
     assert 'alt="Zsolt Szabo" style="--photo-position: 50% 40%;"' in about
     assert 'alt="Filipp R. Loginova" style="--photo-position: 50% 45%;"' in about
+    assert 'class="about-person__media about-person__media--blank" aria-hidden="true"' in about
+    assert "magic-mr-v-cat-hacker" not in about
     assert "object-position: var(--photo-position, 50% 20%);" in styles
+    assert ".page-about .about-person__media.about-person__media--blank {\n    aspect-ratio: 1;\n    background: #000;\n}" in styles
+    assert ".page-about .about-person__media.about-person__media--blank::after {\n    content: none;\n}" in styles
     assert "@media (min-width: 1181px) {\n    .about-person__media {\n        aspect-ratio: 4 / 3;" in styles
 
 
@@ -647,7 +651,7 @@ def test_image_delivery_uses_responsive_webp_and_reserves_layout_space() -> None
                 "assets/images/features/capture-recording-1600.webp",
             ),
         ),
-        "Advantage": (
+        "Why CaveViewer": (
             120_000,
             (
                 "assets/images/features/preferences-import-1600.webp",
@@ -659,7 +663,6 @@ def test_image_delivery_uses_responsive_webp_and_reserves_layout_space() -> None
             (
                 "storage/uploads/2026/08/e02af4158100878810221f4cc8db33f52026e293-960.webp",
                 "storage/uploads/2026/08/46afd31b727aa673872050329b90d75db21bd831-960.webp",
-                "assets/images/magic-mr-v-cat-hacker-960.webp",
                 "storage/uploads/2026/08/0dfffc22c2177fa30ec1e13d531c71b8eb71100d-850.webp",
                 "storage/uploads/2026/08/32c8839d88fe923a90c84a1206c967245f98ef57-960.webp",
                 "storage/uploads/2026/08/4278cd57d55958ba1979cfc0ef999019c70455de-960.webp",
@@ -674,6 +677,7 @@ def test_image_delivery_uses_responsive_webp_and_reserves_layout_space() -> None
     assert "## Image delivery budget" in readme
     assert "picture`/`srcset`" in readme
     assert "`image-set`" in readme
+    assert "Five responsive portrait WebP images plus a black placeholder" in readme
 
     assert "ginnie1.webp" in home_styles
     assert "software-hero-cave-strokes-full.webp" in home_styles
@@ -704,8 +708,8 @@ def test_image_delivery_uses_responsive_webp_and_reserves_layout_space() -> None
         assert source in advantage
     assert advantage.count('loading="lazy" decoding="async"') == 2
 
-    assert about.count("<picture>") == 6
-    assert about.count('sizes="(max-width: 900px) 50vw, 476px"') == 6
+    assert about.count("<picture>") == 5
+    assert about.count('sizes="(max-width: 900px) 50vw, 476px"') == 5
     assert about.count('loading="lazy" decoding="async"') == 3
     assert 'loading="eager" fetchpriority="high"' in about
     assert about.count(' width="') >= 6
