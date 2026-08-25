@@ -16,8 +16,8 @@ production site.
 
 ## Code standards
 
-- Keep the site static and its published artifact limited to the five public
-  HTML routes plus `assets/` and `storage/`. Do not introduce a backend,
+- Keep the site static and its published artifact limited to the public HTML
+  routes plus `assets/` and `storage/`. Do not introduce a backend,
   database, analytics service, or unnecessary framework/build dependency.
 - Follow the existing HTML, CSS, and JavaScript conventions. Prefer semantic
   landmarks, native controls, shared styles, progressive enhancement, and

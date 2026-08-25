@@ -21,7 +21,9 @@
         <nav class="primary-nav" aria-label="Primary navigation">
             <a href="features.html">Features</a>
             <a href="advantage.html" aria-current="page">Why CaveViewer</a>
+            <a href="media.html">Projects</a>
             <a href="about.html">Team</a>
+            <a href="sponsors.html">Sponsors</a>
             <a href="contact.html">Contact</a>
         </nav>
         <a class="header-download" href="index.html#get-caveviewer">Download</a>
@@ -40,7 +42,7 @@
                 <section class="feature-section feature-section--advantage" aria-labelledby="advantage-title" data-reveal>
                     <div class="feature-section__copy">
                         <h2 id="advantage-title">Flexible large map support</h2>
-                        <p>CaveViewer builds a local cache rather than loading every chunk and texture at once. This lets consumer-grade hardware load large maps that might otherwise exceed its available memory, while Preferences still lets you adjust the balance for a particular map.</p>
+                        <p>CaveViewer can render exceptionally large and complicated cave maps by splitting them into smaller pieces and then stacking the segments together like lego blocks. This lets consumer-grade hardware load maps that might otherwise exceed its available memory.</p>
                         <p>CaveViewer sets working memory budgets from available system and graphics memory. If textures exceed the graphics budget, it selects a smaller size before upload; fine surface detail may look softer.</p>
                         <p>You can tune import performance by adjusting <strong>Import chunk size</strong> and <strong>Max upload group size</strong> preferences. Adjust <strong>Cache-building worker limit</strong> to speed up or slow down map imports depending on your hardware.</p>
                         <p>Changes to import settings take effect when a cache is built. Set them before importing a map, or rebuild an existing cache to use new values.</p>
@@ -80,7 +82,7 @@
     </section>
 </main>
 
-<footer class="site-endcap"><div class="site-endcap__inner"><img class="site-endcap__logo" src="assets/icons/caveviewer-cave-profile.svg" width="64" height="32" alt=""><span>&copy; 2026 CaveViewer</span><span class="site-endcap__preview">Site preview</span></div></footer>
+<footer class="site-endcap"><div class="site-endcap__inner"><span class="site-endcap__copyright">&copy; 2026 CaveViewer</span><span class="site-endcap__partner">Bottomline Projects, Florida Chapter</span><img class="site-endcap__logo" src="assets/icons/caveviewer-cave-profile.svg" width="64" height="32" alt=""></div></footer>
 
 <script src="assets/js/app.js" defer></script>
 </body>

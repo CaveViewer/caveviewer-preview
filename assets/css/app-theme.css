@@ -17,7 +17,8 @@ body {
 .page-home .home-cta,
 .page-about .about-team,
 .page-contact .contact-page,
-.page-features .features-page {
+.page-features .features-page,
+.page-media .media-page {
     background-color: var(--bg);
 }
 
@@ -211,6 +212,14 @@ body.page-contact {
         linear-gradient(160deg, #17171f 0%, #111116 54%, #0d0d11 100%);
 }
 
-.page-features .feature-section h2 {
+.page-media .media-page {
+    background:
+        radial-gradient(circle at 16% 14%, rgba(var(--accent-rgb), .1), transparent 28%),
+        linear-gradient(165deg, #101016 0%, #0c0c11 58%, #09090d 100%);
+}
+
+.page-features .feature-section h2,
+.page-advantages .feature-section h2,
+.page-media .feature-section h2 {
     color: var(--title);
 }

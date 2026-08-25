@@ -2,9 +2,11 @@ import { expect, test } from "@playwright/test";
 
 const canonicalPages = [
     { name: "Home", path: "index.html", content: "Explore what" },
-    { name: "Features", path: "features.html", content: "View Huge Maps" },
+    { name: "Features", path: "features.html", content: "View Ginormous Maps" },
     { name: "Why CaveViewer", path: "advantage.html", content: "Flexible large map support" },
+    { name: "Projects", path: "media.html", content: "Dives behind the data", waitUntil: "domcontentloaded" },
     { name: "Team", path: "about.html", content: "Magic Mr_V" },
+    { name: "Sponsors", path: "sponsors.html", content: "KISS Rebreathers" },
     { name: "Contact", path: "contact.html", content: "Contact Us" },
 ];
 
@@ -55,9 +57,11 @@ test.describe("canonical website-preview routes", () => {
             await page.setViewportSize(viewport);
 
             for (const route of canonicalPages) {
-                await page.goto(route.path, { waitUntil: "networkidle" });
+                await page.goto(route.path, { waitUntil: route.waitUntil ?? "networkidle" });
                 await expect(page.locator("main")).toBeVisible();
-                await expect(page.locator("main")).toContainText(route.content);
+                if (route.content) {
+                    await expect(page.locator("main")).toContainText(route.content);
+                }
                 await expectNoHorizontalOverflow(page);
             }
         });
@@ -113,12 +117,73 @@ test("the mobile navigation is keyboard-operable", async ({ page }) => {
     await page.keyboard.press("Tab");
     await expect(navigation.getByRole("link", { name: "Why CaveViewer" })).toBeFocused();
     await page.keyboard.press("Tab");
+    await expect(navigation.getByRole("link", { name: "Projects" })).toBeFocused();
+    await page.keyboard.press("Tab");
     await expect(navigation.getByRole("link", { name: "Team" })).toBeFocused();
+    await page.keyboard.press("Tab");
+    await expect(navigation.getByRole("link", { name: "Sponsors" })).toBeFocused();
+    await page.keyboard.press("Tab");
+    await expect(navigation.getByRole("link", { name: "Contact" })).toBeFocused();
 
     await page.keyboard.press("Escape");
     await expect(menuToggle).toHaveAttribute("aria-expanded", "false");
     await expect(navigation).not.toHaveClass(/is-open/);
     await expect(menuToggle).toBeFocused();
+});
+
+test("Sponsors uses responsive cards with official-site links", async ({ page }) => {
+    await page.setViewportSize({ width: 1440, height: 900 });
+    await page.goto("sponsors.html", { waitUntil: "networkidle" });
+
+    const navigation = page.getByRole("navigation", { name: "Primary navigation" });
+    const grid = page.locator(".sponsors-page__grid");
+    const cards = grid.locator(".sponsor-card");
+    const kiss = cards.filter({ has: page.getByRole("heading", { name: "KISS Rebreathers" }) });
+    const xdeep = cards.filter({ has: page.getByRole("heading", { name: "XDEEP" }) });
+
+    await expect(navigation.getByRole("link", { name: "Sponsors" })).toHaveAttribute(
+        "aria-current",
+        "page",
+    );
+    const sponsorHeading = page.getByRole("heading", { name: "Sponsors", level: 1 });
+    await expect(sponsorHeading).toHaveClass(/sr-only/);
+    expect(await sponsorHeading.evaluate(heading => {
+        const bounds = heading.getBoundingClientRect();
+
+        return { height: bounds.height, width: bounds.width };
+    })).toEqual({ height: 1, width: 1 });
+    await expect(cards).toHaveCount(2);
+    await expect(kiss).toHaveAttribute("href", "https://www.kissrebreathers.com/");
+    await expect(xdeep).toHaveAttribute("href", "https://www.xdeep.eu/");
+    await expect(kiss).toHaveAttribute("target", "_blank");
+    await expect(xdeep).toHaveAttribute("rel", "noopener noreferrer");
+    await expect(kiss.getByRole("img", { name: "KISS Rebreathers logo" })).toBeVisible();
+    await expect(xdeep.getByRole("img", { name: "XDEEP logo" })).toBeVisible();
+    await kiss.focus();
+    await expect(kiss).toHaveCSS("outline-style", "solid");
+    expect(await kiss.locator("img").evaluate(image => image.currentSrc)).toMatch(
+        /kiss-rebreathers-logo\.webp$/,
+    );
+    expect(await xdeep.locator("img").evaluate(image => image.currentSrc)).toMatch(
+        /xdeep-logo\.webp$/,
+    );
+    await expectNoHorizontalOverflow(page);
+
+    await page.setViewportSize({ width: 390, height: 844 });
+    await page.goto("sponsors.html", { waitUntil: "networkidle" });
+    const mobileLayout = await page.locator(".sponsors-page__grid").evaluate(gridElement => {
+        const cards = [...gridElement.querySelectorAll(".sponsor-card")];
+
+        return cards.map(card => {
+            const bounds = card.getBoundingClientRect();
+            return { left: bounds.left, top: bounds.top, width: bounds.width };
+        });
+    });
+
+    expect(mobileLayout).toHaveLength(2);
+    expect(mobileLayout[1].top).toBeGreaterThan(mobileLayout[0].top);
+    expect(mobileLayout[1].left).toBeCloseTo(mobileLayout[0].left, 1);
+    await expectNoHorizontalOverflow(page);
 });
 
 test("the shared header switches cleanly between inline and compact navigation", async ({ page }) => {
@@ -177,6 +242,32 @@ test("the Why CaveViewer link reaches practical, readable map guidance", async (
     await expectFontSizeAtLeast(page.locator(
         ".feature-section--advantage .feature-section__copy p",
     ), 14);
+    await expectNoHorizontalOverflow(page);
+});
+
+test("Projects presents the two original expedition videos in the Feature layout", async ({ page }) => {
+    await page.setViewportSize({ width: 1440, height: 900 });
+    await page.goto("media.html", { waitUntil: "domcontentloaded" });
+
+    const navigation = page.getByRole("navigation", { name: "Primary navigation" });
+    const videos = page.locator(".feature-section__visual--video iframe");
+
+    await expect(navigation.getByRole("link", { name: "Projects" })).toHaveAttribute(
+        "aria-current",
+        "page",
+    );
+    await expect(page.getByRole("heading", { name: "Dives behind the data", level: 1 })).toBeVisible();
+    await expect(videos).toHaveCount(2);
+    await expect(videos.nth(0)).toHaveAttribute(
+        "src",
+        "https://www.youtube-nocookie.com/embed/ZytYB0jpe38",
+    );
+    await expect(videos.nth(1)).toHaveAttribute(
+        "src",
+        "https://www.youtube-nocookie.com/embed/BSv9UILf6DI",
+    );
+    await expect(videos.nth(0)).toHaveAttribute("loading", "lazy");
+    await expect(videos.nth(1)).toHaveAttribute("loading", "lazy");
     await expectNoHorizontalOverflow(page);
 });
 
@@ -540,7 +631,7 @@ test("disabling JavaScript leaves every reveal target visible", async ({ browser
 
     try {
         for (const route of canonicalPages) {
-            await page.goto(route.path, { waitUntil: "networkidle" });
+            await page.goto(route.path, { waitUntil: route.waitUntil ?? "networkidle" });
             const revealTargetsAreVisible = await page.locator("[data-reveal]").evaluateAll(
                 targets => targets.length > 0 && targets.every(target => {
                     const style = getComputedStyle(target);

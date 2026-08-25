@@ -146,14 +146,17 @@
     font-size: 18px;
     font-weight: var(--display-weight);
     letter-spacing: -.015em;
+    line-height: 1.15;
 }
 .platform-download__primary small {
     color: rgba(236,249,253,.72);
     font-size: var(--small-text-min);
     font-weight: 650;
     letter-spacing: .055em;
+    line-height: 1.25;
 }
 .platform-download__primary > b {
+    position: relative;
     width: 38px;
     height: 38px;
     flex: 0 0 auto;
@@ -161,9 +164,26 @@
     place-items: center;
     border: 1px solid rgba(255,255,255,.30);
     background: rgba(2,27,37,.16);
-    font-size: 18px;
-    font-weight: 400;
-    line-height: 1;
+    font-size: 0;
+}
+.platform-download__primary > b::before,
+.platform-download__primary > b::after {
+    position: absolute;
+    content: "";
+    background: currentColor;
+}
+.platform-download__primary > b::before {
+    width: 1.5px;
+    height: 14px;
+    transform: translateY(-2px);
+}
+.platform-download__primary > b::after {
+    width: 8px;
+    height: 8px;
+    border-right: 1.5px solid currentColor;
+    border-bottom: 1.5px solid currentColor;
+    background: transparent;
+    transform: translateY(3px) rotate(45deg);
 }
 .platform-download__alternatives {
     width: max-content;
@@ -177,6 +197,7 @@
     font-size: var(--small-text-min);
     font-weight: 700;
     letter-spacing: .08em;
+    line-height: 1.15;
     text-transform: uppercase;
 }
 .platform-download__alternatives::after { content: " +"; color: var(--cyan); }
@@ -212,6 +233,7 @@ body.platform-dialog-open { overflow: hidden; }
     font-size: var(--small-text-min);
     font-weight: 750;
     letter-spacing: .12em;
+    line-height: 1.2;
     text-transform: uppercase;
 }
 .platform-download__dialog-header h2 {
@@ -221,8 +243,10 @@ body.platform-dialog-open { overflow: hidden; }
     font-size: 26px;
     font-weight: var(--display-weight);
     letter-spacing: -.025em;
+    line-height: 1.1;
 }
 .platform-download__dialog-header > button {
+    position: relative;
     width: 38px;
     height: 38px;
     flex: 0 0 auto;
@@ -233,9 +257,23 @@ body.platform-dialog-open { overflow: hidden; }
     background: rgba(255,255,255,.025);
     color: #a8bbc2;
     cursor: pointer;
-    font-size: 23px;
-    font-weight: 300;
-    line-height: 1;
+    font-size: 0;
+}
+.platform-download__dialog-header > button::before,
+.platform-download__dialog-header > button::after {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 15px;
+    height: 1.5px;
+    content: "";
+    background: currentColor;
+}
+.platform-download__dialog-header > button::before {
+    transform: translate(-50%, -50%) rotate(45deg);
+}
+.platform-download__dialog-header > button::after {
+    transform: translate(-50%, -50%) rotate(-45deg);
 }
 .platform-download__dialog-header > button:hover { color: #fff; border-color: rgba(81,199,243,.48); }
 .platform-download__options {
@@ -268,8 +306,8 @@ body.platform-dialog-open { overflow: hidden; }
     flex-direction: column;
     gap: 4px;
 }
-.platform-download__options strong { font-size: 13px; font-weight: 650; }
-.platform-download__options small { color: #718891; font-size: var(--small-text-min); }
+.platform-download__options strong { font-size: 13px; font-weight: 650; line-height: 1.2; }
+.platform-download__options small { color: #718891; font-size: var(--small-text-min); line-height: 1.3; }
 .platform-download__options .platform-download__install-note {
     max-width: 330px;
     margin-top: 1px;
@@ -279,7 +317,43 @@ body.platform-dialog-open { overflow: hidden; }
     letter-spacing: 0;
     line-height: 1.4;
 }
-.platform-download__options b { color: var(--cyan); font-size: 15px; font-weight: 400; }
+.platform-download__options > a > b,
+.platform-download__mac-option > button > b {
+    position: relative;
+    display: grid;
+    width: 20px;
+    height: 20px;
+    flex: 0 0 20px;
+    place-items: center;
+    color: var(--cyan);
+    font-size: 0;
+}
+.platform-download__options > a > b::before,
+.platform-download__options > a > b::after {
+    position: absolute;
+    content: "";
+}
+.platform-download__options > a > b::before {
+    width: 1.5px;
+    height: 11px;
+    background: currentColor;
+    transform: translateY(-2px);
+}
+.platform-download__options > a > b::after {
+    width: 7px;
+    height: 7px;
+    border-right: 1.5px solid currentColor;
+    border-bottom: 1.5px solid currentColor;
+    transform: translateY(3px) rotate(45deg);
+}
+.platform-download__mac-option > button > b::after {
+    width: 8px;
+    height: 8px;
+    content: "";
+    border-right: 1.5px solid currentColor;
+    border-bottom: 1.5px solid currentColor;
+    transform: rotate(-45deg);
+}
 .platform-download__mac-choices {
     padding: 10px;
     display: grid;

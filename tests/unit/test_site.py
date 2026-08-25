@@ -62,7 +62,7 @@ def test_pages_workflow_deploys_only_the_static_site_artifact() -> None:
     )
 
     assert "path: _site" in workflow
-    assert "cp about.html advantage.html contact.html features.html index.html _site/" in workflow
+    assert "cp about.html advantage.html contact.html features.html index.html media.html sponsors.html _site/" in workflow
     assert "cp -R assets storage _site/" in workflow
     assert "github.ref == 'refs/heads/main'" in workflow
     assert not (SITE_ROOT / "CNAME").exists()
@@ -150,6 +150,8 @@ def test_preview_contains_only_the_canonical_public_routes() -> None:
         "contact.html",
         "features.html",
         "index.html",
+        "media.html",
+        "sponsors.html",
     }
 
     actual_pages = {path.name for path in _html_pages()}
@@ -350,6 +352,8 @@ def test_pages_expose_skip_paths_headings_and_noncolor_navigation_cues() -> None
         "features.html": '<h1 class="sr-only">CaveViewer features</h1>',
         "advantage.html": '<h1 class="sr-only">Why CaveViewer</h1>',
         "about.html": '<h1 class="sr-only">CaveViewer team</h1>',
+        "media.html": '<h1 id="media-page-title" class="media-page__title">Dives behind the data</h1>',
+        "sponsors.html": '<h1 id="sponsors-page-title" class="sr-only">Sponsors</h1>',
     }
 
     for page in _html_pages():
@@ -412,9 +416,21 @@ def test_preview_uses_one_header_and_has_no_member_profile_routes() -> None:
         assert 'href="advantage.html">Why CaveViewer</a>' in text or (
             'href="advantage.html" aria-current="page">Why CaveViewer</a>' in text
         )
-        assert text.index(">Features</a>") < text.index(">Why CaveViewer</a>") < text.index(">Team</a>")
+        assert 'href="media.html">Projects</a>' in text or (
+            'href="media.html" aria-current="page">Projects</a>' in text
+        )
+        assert (
+            text.index(">Features</a>")
+            < text.index(">Why CaveViewer</a>")
+            < text.index(">Projects</a>")
+            < text.index(">Team</a>")
+        )
         assert 'href="about.html">Team</a>' in text or (
             'href="about.html" aria-current="page">Team</a>' in text
+        )
+        assert text.index(">Team</a>") < text.index(">Sponsors</a>") < text.index(">Contact</a>")
+        assert 'href="sponsors.html">Sponsors</a>' in text or (
+            'href="sponsors.html" aria-current="page">Sponsors</a>' in text
         )
         assert 'href="contact.html">Contact</a>' in text or (
             'href="contact.html" aria-current="page">Contact</a>' in text
@@ -438,10 +454,32 @@ def test_preview_uses_one_header_and_has_no_member_profile_routes() -> None:
     contact = (SITE_ROOT / "contact.html").read_text(encoding="utf-8")
     assert 'href="contact.html" aria-current="page">Contact</a>' in contact
 
+    sponsors = (SITE_ROOT / "sponsors.html").read_text(encoding="utf-8")
+    assert 'href="sponsors.html" aria-current="page">Sponsors</a>' in sponsors
+    assert '<section class="sponsors-page" aria-labelledby="sponsors-page-title">' in sponsors
+    assert '<div class="sponsors-page__grid">' in sponsors
+    assert sponsors.count('<a class="sponsor-card ') == 2
+    for sponsor, href, image, width, height in (
+        (
+            "KISS Rebreathers",
+            "https://www.kissrebreathers.com/",
+            "kiss-rebreathers-logo",
+            "487",
+            "82",
+        ),
+        ("XDEEP", "https://www.xdeep.eu/", "xdeep-logo", "95", "24"),
+    ):
+        assert f'href="{href}" target="_blank" rel="noopener noreferrer"' in sponsors
+        assert f'<h2>{sponsor}</h2>' in sponsors
+        assert f'assets/images/sponsors/{image}.webp' in sponsors
+        assert f'assets/images/sponsors/{image}.png' in sponsors
+        assert f'width="{width}" height="{height}"' in sponsors
+
+
     features = (SITE_ROOT / "features.html").read_text(encoding="utf-8")
     assert 'href="features.html" aria-current="page">Features</a>' in features
     for feature in (
-        "View Huge Maps",
+        "View Ginormous Maps",
         "Enjoy Free Maps",
         "Record &amp; Share Dives",
     ):
@@ -452,6 +490,41 @@ def test_preview_uses_one_header_and_has_no_member_profile_routes() -> None:
     advantage = (SITE_ROOT / "advantage.html").read_text(encoding="utf-8")
     assert 'href="advantage.html" aria-current="page">Why CaveViewer</a>' in advantage
     assert ">Flexible large map support<" in advantage
+
+    media = (SITE_ROOT / "media.html").read_text(encoding="utf-8")
+    assert 'href="media.html" aria-current="page">Projects</a>' in media
+    assert '<section class="media-page" aria-labelledby="media-page-title">' in media
+    assert media.count('class="feature-section__visual feature-section__visual--video"') == 2
+    for video_id, title in (
+        (
+            "ZytYB0jpe38",
+            "Wes Skiles Peacock Springs State Park — 3-D Mapping Initiative",
+        ),
+        ("BSv9UILf6DI", "Devil's Eye — Mapping Update, February 2026"),
+    ):
+        assert f"https://www.youtube.com/watch?v={video_id}" in media
+        assert f"https://www.youtube-nocookie.com/embed/{video_id}" in media
+        assert f'title="{title}"' in media
+    assert 'loading="lazy"' in media
+    assert 'referrerpolicy="strict-origin-when-cross-origin"' in media
+
+
+def test_sponsors_grid_uses_local_logo_fallbacks_and_accepts_future_cards() -> None:
+    sponsors = (SITE_ROOT / "sponsors.html").read_text(encoding="utf-8")
+    styles = (SITE_ROOT / "assets/css/sponsors.css").read_text(encoding="utf-8")
+
+    assert 'assets/css/sponsors.css' in sponsors
+    assert sponsors.count("<picture>") == 2
+    assert sponsors.count('type="image/webp"') == 2
+    assert sponsors.count('decoding="async"') == 2
+    assert 'loading="eager" fetchpriority="high"' in sponsors
+    assert (SITE_ROOT / "assets/images/sponsors/kiss-rebreathers-logo.png").is_file()
+    assert (SITE_ROOT / "assets/images/sponsors/kiss-rebreathers-logo.webp").is_file()
+    assert (SITE_ROOT / "assets/images/sponsors/xdeep-logo.png").is_file()
+    assert (SITE_ROOT / "assets/images/sponsors/xdeep-logo.webp").is_file()
+    assert "grid-template-columns: repeat(auto-fit, minmax(min(100%, 260px), 1fr));" in styles
+    assert ".sponsor-card:focus-visible {\n    outline: 2px solid" in styles
+    assert "@media (max-width: 620px)" in styles
 
 
 def test_advantage_section_uses_the_real_preferences_and_capabilities() -> None:
@@ -466,7 +539,7 @@ def test_advantage_section_uses_the_real_preferences_and_capabilities() -> None:
     assert "advantages-page" not in features
     assert "feature-section--advantage" not in features
     for text in (
-        "CaveViewer builds a local cache",
+        "render exceptionally large and complicated cave maps",
         "available system and graphics memory",
         "selects a smaller size before upload",
         "fine surface detail may look softer",
@@ -604,12 +677,11 @@ def test_every_local_page_reference_resolves() -> None:
     assert not missing_fragments
 
 
-def test_about_omits_sponsors_and_contact() -> None:
+def test_about_omits_inline_sponsors_and_contact_content() -> None:
     about = (SITE_ROOT / "about.html").read_text(encoding="utf-8")
 
     for removed_content in (
         "about-sponsors",
-        "Sponsors",
         "about-contact",
         "Get in touch",
         "data-static-preview-form",
@@ -636,6 +708,7 @@ def test_image_delivery_uses_responsive_webp_and_reserves_layout_space() -> None
     features = (SITE_ROOT / "features.html").read_text(encoding="utf-8")
     advantage = (SITE_ROOT / "advantage.html").read_text(encoding="utf-8")
     about = (SITE_ROOT / "about.html").read_text(encoding="utf-8")
+    sponsors = (SITE_ROOT / "sponsors.html").read_text(encoding="utf-8")
     home_styles = (SITE_ROOT / "assets/css/home.css").read_text(encoding="utf-8")
     feature_styles = (SITE_ROOT / "assets/css/features.css").read_text(
         encoding="utf-8"
@@ -678,6 +751,13 @@ def test_image_delivery_uses_responsive_webp_and_reserves_layout_space() -> None
                 "storage/uploads/2026/08/4278cd57d55958ba1979cfc0ef999019c70455de-960.webp",
             ),
         ),
+        "Sponsors": (
+            50_000,
+            (
+                "assets/images/sponsors/kiss-rebreathers-logo.webp",
+                "assets/images/sponsors/xdeep-logo.webp",
+            ),
+        ),
     }
 
     for route, (budget, assets) in page_budgets.items():
@@ -688,6 +768,8 @@ def test_image_delivery_uses_responsive_webp_and_reserves_layout_space() -> None
     assert "picture`/`srcset`" in readme
     assert "`image-set`" in readme
     assert "Five responsive portrait WebP images" in readme
+    assert "KISS Rebreathers and XDEEP logo WebP images" in readme
+    assert "two privacy-enhanced YouTube embeds" in readme
 
     assert "ginnie1.webp" in home_styles
     assert "software-hero-cave-strokes-full.webp" in home_styles
@@ -724,6 +806,10 @@ def test_image_delivery_uses_responsive_webp_and_reserves_layout_space() -> None
     assert 'loading="eager" fetchpriority="high"' in about
     assert about.count(' width="') >= 6
     assert ".about-person__media picture" in about_styles
+
+    assert sponsors.count("<picture>") == 2
+    assert 'alt="KISS Rebreathers logo"' in sponsors
+    assert 'alt="XDEEP logo"' in sponsors
 
 
 def test_wide_home_hero_has_explicit_art_direction_and_aligned_gutters() -> None:

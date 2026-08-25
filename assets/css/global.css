@@ -80,6 +80,11 @@ select {
     font: inherit;
 }
 
+button {
+    -webkit-appearance: none;
+    appearance: none;
+}
+
 .shell {
     width: min(calc(100% - 64px), var(--max));
     margin-inline: auto;
@@ -109,6 +114,8 @@ select {
     font-size: var(--small-text-min);
     font-weight: 700;
     letter-spacing: .095em;
+    line-height: 1.15;
+    text-align: center;
     text-transform: uppercase;
     transition: transform .2s ease, background .2s ease, border-color .2s ease,
         color .2s ease;
@@ -258,7 +265,7 @@ html.reveal-enhanced [data-reveal].is-visible {
     font-size: 13px;
     font-weight: 700;
     letter-spacing: .015em;
-    line-height: 1;
+    line-height: 1.15;
     white-space: nowrap;
     transition: background .18s ease, border-color .18s ease, transform .18s ease;
 }
@@ -310,40 +317,40 @@ main [id] {
 
 /* The canonical pages use this compact endcap, not the retired full footer. */
 .site-endcap {
-    flex: 0 0 36px;
-    height: 36px;
-    overflow: hidden;
+    flex: 0 0 auto;
+    min-height: 36px;
+    overflow: visible;
     border: 0;
     background: transparent;
 }
 
 .site-endcap__inner {
-    display: flex;
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr) auto;
     align-items: center;
     width: min(calc(100% - 32px), var(--max));
-    height: 100%;
-    gap: 6px;
+    min-height: 36px;
+    column-gap: 6px;
+    padding-block: 6px;
     margin-inline: auto;
     color: var(--muted);
-    font-size: var(--small-text-min);
-    line-height: 1;
+    line-height: 1.2;
 }
 
-.site-endcap__preview {
-    padding-left: 8px;
-    border-left: 1px solid var(--line);
-    color: var(--title);
+.site-endcap__copyright,
+.site-endcap__partner {
     font-size: var(--small-text-min);
-    font-weight: 700;
-    letter-spacing: .04em;
-    text-transform: uppercase;
+}
+
+.site-endcap__partner {
+    min-width: 0;
+    margin-left: auto;
+    text-align: right;
 }
 
 .site-endcap__logo {
-    order: 2;
     width: 28px;
     height: 14px;
-    margin-left: auto;
     object-fit: contain;
 }
 

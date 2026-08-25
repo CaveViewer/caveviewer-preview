@@ -20,12 +20,12 @@ body.page-contact {
     position: relative;
     isolation: isolate;
     display: grid;
-    align-items: center;
+    align-items: start;
     /* Fill a normal viewport, but let the document grow when its form does. */
     min-height: calc(100vh - 36px);
     min-height: calc(100svh - 36px);
     overflow: visible;
-    padding: calc(var(--header-h) + 28px) 0 48px;
+    padding: calc(var(--header-h) + clamp(40px, 5vw, 72px)) 0 48px;
     background:
         radial-gradient(circle at 82% 14%, rgba(57, 172, 215, .17), transparent 24%),
         radial-gradient(circle at 13% 88%, rgba(21, 91, 119, .12), transparent 28%),
@@ -151,7 +151,7 @@ body.page-contact {
 @media (max-width: 620px) {
     .contact-page {
         display: block;
-        padding-top: calc(var(--header-h) + 28px);
+        padding-top: calc(var(--header-h) + 32px);
         padding-bottom: 40px;
     }
 
