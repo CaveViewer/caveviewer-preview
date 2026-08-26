@@ -21,10 +21,6 @@ END_MARKER = "<!-- release-picker:end -->"
 DOCS_START_MARKER = "<!-- installation-guidance:start -->"
 DOCS_END_MARKER = "<!-- installation-guidance:end -->"
 OFFICIAL_RELEASE_REPOSITORY = "https://github.com/CaveViewer/CaveViewer"
-OFFICIAL_GUIDANCE_URLS = {
-    "windows": "https://learn.microsoft.com/en-us/windows/apps/package-and-deploy/smartscreen-reputation",
-    "macos": "https://support.apple.com/guide/mac-help/open-a-mac-app-from-an-unknown-developer-mh40616/mac",
-}
 RELEASE_VERSION_PATTERN = re.compile(r"\d+\.\d+\.\d+")
 RELEASE_CHANNELS = {"Preview", "Stable"}
 
@@ -103,20 +99,13 @@ def load_release_data(path: Path = RELEASE_DATA_PATH) -> dict[str, Any]:
             if key == "artifact":
                 artifacts.add(value)
 
-    for name, guidance_url in OFFICIAL_GUIDANCE_URLS.items():
+    for name in ("windows", "macos"):
         platform = platforms[name]
         security = _require_mapping(
             platform.get("security"), f"release.platforms.{name}.security"
         )
         for key in ("explanation", "action"):
             _require_text(security, key, f"release.platforms.{name}.security")
-        if _require_text(
-            security, "guidance_url", f"release.platforms.{name}.security"
-        ) != guidance_url:
-            raise ValueError(
-                f"release.platforms.{name}.security.guidance_url must be the "
-                "official platform guidance URL"
-            )
 
     macos = _require_mapping(platforms["macos"], "release.platforms.macos")
     for key in ("label", "primary_label", "detail", "install_note", "help"):
@@ -253,14 +242,6 @@ def render_installation_guidance(release: dict[str, Any]) -> str:
     mac_arm_url = _release_url(release, mac_arm["artifact"])
     mac_intel_url = _release_url(release, mac_intel["artifact"])
 
-    def security_link(platform: dict[str, Any] | None = None) -> str:
-        if platform is None:
-            return '<p class="docs-install-card__help" aria-hidden="true"></p>'
-        return (
-            f'<p class="docs-install-card__help"><a href="{_attribute(platform["security"]["guidance_url"])}">'
-            "More info →</a></p>"
-        )
-
     def download_link(url: str, label: str, accessible_label: str) -> str:
         glyph = (
             '<svg viewBox="0 0 24 24" aria-hidden="true">'
@@ -280,7 +261,6 @@ def render_installation_guidance(release: dict[str, Any]) -> str:
             '<h3 id="install-windows">Windows</h3>',
             f'<p>{_text(windows["install_note"])} {_text(windows["security"]["explanation"])} {_text(windows["security"]["action"])}</p>',
             '<div class="docs-install-card__actions">',
-            security_link(windows),
             f'<p class="docs-install-card__downloads">{download_link(windows_url, "Windows", "Download CaveViewer for Windows")}</p>',
             "</div>",
             "</section>",
@@ -288,15 +268,13 @@ def render_installation_guidance(release: dict[str, Any]) -> str:
             '<h3 id="install-macos">macOS</h3>',
             f'<p>{_text(macos["install_note"])} {_text(macos["security"]["explanation"])} {_text(macos["security"]["action"])}</p>',
             '<div class="docs-install-card__actions">',
-            security_link(macos),
-            f'<p class="docs-install-card__downloads">{download_link(mac_arm_url, "Apple", "Download CaveViewer for Apple silicon")}{download_link(mac_intel_url, "Intel", "Download CaveViewer for Intel Mac")}</p>',
+            f'<p class="docs-install-card__downloads">{download_link(mac_arm_url, mac_arm["label"], "Download CaveViewer for Apple silicon")}{download_link(mac_intel_url, mac_intel["label"], "Download CaveViewer for Intel Mac")}</p>',
             "</div>",
             "</section>",
             '<section class="docs-install-card" aria-labelledby="install-linux">',
             '<h3 id="install-linux">Linux</h3>',
             f'<p>{_text(linux["install_note"])}</p>',
             '<div class="docs-install-card__actions">',
-            security_link(),
             f'<p class="docs-install-card__downloads">{download_link(linux_url, "Linux", "Download CaveViewer for Linux")}</p>',
             "</div>",
             "</section>",

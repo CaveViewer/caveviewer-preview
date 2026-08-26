@@ -144,22 +144,6 @@ def test_release_manifest_rejects_noncanonical_package_names(tmp_path: Path) -> 
         sync_release.load_release_data(manifest_path)
 
 
-@pytest.mark.parametrize("platform", ("windows", "macos"))
-def test_release_manifest_rejects_unofficial_guidance_urls(
-    tmp_path: Path, platform: str
-) -> None:
-    sync_release = _sync_release_module()
-    release = json.loads((SITE_ROOT / "assets/data/release.json").read_text())
-    release["platforms"][platform]["security"]["guidance_url"] = (
-        "https://example.invalid/security-help"
-    )
-    manifest_path = tmp_path / "release.json"
-    manifest_path.write_text(json.dumps(release), encoding="utf-8")
-
-    with pytest.raises(ValueError, match="official platform guidance URL"):
-        sync_release.load_release_data(manifest_path)
-
-
 def test_preview_contains_only_the_canonical_public_routes() -> None:
     expected_pages = {
         "about.html",
@@ -323,7 +307,9 @@ def test_preview_release_manifest_generates_every_download_reference() -> None:
     assert all(url in docs for url in expected_urls.values())
     assert "Download CaveViewer for your desktop platform" not in docs
     assert docs.count('<div class="docs-install-card__actions">') == 3
-    assert docs.count('class="docs-install-card__help"') == 3
+    assert 'class="docs-install-card__help"' not in docs
+    assert "learn.microsoft.com" not in docs
+    assert "support.apple.com" not in docs
     assert docs.count('class="docs-install-card__downloads"') == 3
     for label in (
         "Download CaveViewer for Windows",
@@ -340,7 +326,6 @@ def test_preview_release_manifest_generates_every_download_reference() -> None:
         security = platforms[platform_name]["security"]
         assert security["explanation"] in docs
         assert escape(security["action"]) in docs
-        assert f'href="{security["guidance_url"]}"' in docs
 
     noscript = index[index.index("<noscript>") : index.index("</noscript>")]
     assert all(url in noscript for url in expected_urls.values())

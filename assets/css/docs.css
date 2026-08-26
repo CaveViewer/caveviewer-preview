@@ -85,16 +85,16 @@
     margin-top: auto;
     padding-top: 12px;
 }
-.docs-install-card__help {
-    min-height: 31px;
-}
-.docs-install-card__actions .docs-install-card__help {
-    margin-bottom: 0;
-}
 .docs-install-card__downloads {
     display: flex;
     flex-wrap: wrap;
     gap: 8px;
+    justify-content: center;
+}
+.docs-install-card[aria-labelledby="install-macos"] .docs-install-card__downloads {
+    display: grid;
+    grid-template-columns: minmax(0, 176px);
+    justify-content: center;
 }
 .docs-article .docs-install-card__downloads a {
     display: inline-flex;
@@ -108,6 +108,12 @@
     font-weight: 700;
     line-height: 1.2;
     text-decoration: none;
+}
+.docs-article .docs-install-card[aria-labelledby="install-macos"] .docs-install-card__downloads a {
+    min-width: 0;
+    justify-content: center;
+    width: 100%;
+    white-space: nowrap;
 }
 .docs-install-card__downloads svg {
     width: 17px;

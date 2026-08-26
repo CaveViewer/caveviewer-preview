@@ -19,20 +19,18 @@
       "install_note": "Run the setup file. Windows may identify CaveViewer as an unrecognized app.",
       "security": {
         "explanation": "Microsoft does not yet recognize its publisher. Confirm that the installer came from the official CaveViewer site before proceeding.",
-        "action": "Depending on your Windows version, select More info → Run anyway.",
-        "guidance_url": "https://learn.microsoft.com/en-us/windows/apps/package-and-deploy/smartscreen-reputation"
+        "action": "Depending on your Windows version, select More info → Run anyway."
       }
     },
     "macos": {
       "label": "macOS",
       "primary_label": "Get CaveViewer for macOS",
-      "detail": "Choose Apple silicon or Intel",
-      "install_note": "Choose the download for Apple silicon or Intel, then drag CaveViewer into Applications. macOS may be unable to verify CaveViewer.",
+      "detail": "Choose Apple silicon or Intel Mac",
+      "install_note": "Choose the download for Apple silicon or Intel Mac, then drag CaveViewer into Applications. macOS may be unable to verify CaveViewer.",
       "help": "Check Apple menu → About This Mac. Look for “Chip” or “Processor.”",
       "security": {
         "explanation": "Apple does not yet recognize its developer.",
-        "action": "After confirming the download source, go to System Settings → Privacy & Security → Open Anyway. Do not override a warning that says the app will damage your computer.",
-        "guidance_url": "https://support.apple.com/guide/mac-help/open-a-mac-app-from-an-unknown-developer-mh40616/mac"
+        "action": "After confirming the download source, go to System Settings → Privacy & Security → Open Anyway. Do not override a warning that says the app will damage your computer."
       },
       "architectures": {
         "arm64": {
@@ -41,7 +39,7 @@
           "artifact": "CaveViewer-1.0.92-macos-arm64.dmg"
         },
         "x86_64": {
-          "label": "Intel",
+          "label": "Intel Mac",
           "detail": "Intel processor",
           "artifact": "CaveViewer-1.0.92-macos-x86_64.dmg"
         }
