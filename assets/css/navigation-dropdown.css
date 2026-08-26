@@ -97,7 +97,7 @@
     .primary-nav__dropdown > summary {
         justify-content: space-between;
         min-height: 44px;
-        padding: 0;
+        padding: 10px;
     }
     .primary-nav__dropdown-menu {
         position: static;

@@ -105,7 +105,15 @@ test("the mobile navigation is keyboard-operable", async ({ page }) => {
     await page.goto("index.html", { waitUntil: "networkidle" });
 
     const menuToggle = page.locator("[data-menu-toggle]");
+    const headerDownload = page.locator(".header-download");
     const navigation = page.getByRole("navigation", { name: "Primary navigation" });
+
+    for (const control of [headerDownload, menuToggle]) {
+        expect(await control.evaluate(element => {
+            const bounds = element.getBoundingClientRect();
+            return { height: bounds.height, width: bounds.width };
+        })).toEqual({ height: 44, width: 44 });
+    }
 
     await expect(menuToggle).toHaveAttribute("aria-label", "Open navigation");
     await menuToggle.focus();
@@ -114,6 +122,21 @@ test("the mobile navigation is keyboard-operable", async ({ page }) => {
     await expect(menuToggle).toHaveAttribute("aria-label", "Close navigation");
     await expect(navigation).toHaveClass(/is-open/);
     await expect(navigation.getByRole("link", { name: "Why CaveViewer" })).toBeFocused();
+
+    const labelInsets = await navigation.evaluate(element => {
+        const textLeft = target => {
+            const textNode = [...target.childNodes].find(node => node.nodeType === Node.TEXT_NODE);
+            const range = document.createRange();
+            range.selectNodeContents(textNode);
+            return range.getBoundingClientRect().left;
+        };
+        const directLink = element.querySelector(":scope > a");
+        const summaries = [...element.querySelectorAll(":scope > details > summary")];
+
+        return [textLeft(directLink), ...summaries.map(textLeft)];
+    });
+    expect(labelInsets[1]).toBeCloseTo(labelInsets[0], 1);
+    expect(labelInsets[2]).toBeCloseTo(labelInsets[0], 1);
 
     await page.keyboard.press("Tab");
     await expect(navigation.getByText("Docs", { exact: true })).toBeFocused();
@@ -145,6 +168,28 @@ test("the mobile navigation is keyboard-operable", async ({ page }) => {
     await expect(menuToggle).toHaveAttribute("aria-expanded", "false");
     await expect(navigation).not.toHaveClass(/is-open/);
     await expect(menuToggle).toBeFocused();
+});
+
+test("the mobile hero separates its copy from the visible download action", async ({ page }) => {
+    await page.setViewportSize({ width: 390, height: 844 });
+    await page.goto("index.html", { waitUntil: "networkidle" });
+
+    const layout = await page.evaluate(() => {
+        const chooser = document.querySelector(".platform-download");
+        const primaryAction = document.querySelector(".platform-download__primary");
+        const chooserStyle = getComputedStyle(chooser);
+        const actionBounds = primaryAction.getBoundingClientRect();
+
+        return {
+            actionBottom: actionBounds.bottom,
+            marginTop: Number.parseFloat(chooserStyle.marginTop),
+            viewportHeight: innerHeight,
+        };
+    });
+
+    expect(layout.marginTop).toBeGreaterThanOrEqual(18);
+    expect(layout.actionBottom).toBeLessThanOrEqual(layout.viewportHeight);
+    await expectNoHorizontalOverflow(page);
 });
 
 test("the mobile navigation stays reachable on a short viewport", async ({ page }) => {
@@ -586,6 +631,8 @@ test("the generated release manifest preserves the Windows primary action and ma
 
     await page.locator("[data-platform-dialog-open]").click();
     await expect(dialog).toHaveAttribute("open", "");
+    await expect(dialog.locator('[data-release-platform="windows"] b svg')).toHaveCount(1);
+    await expect(dialog.locator('[data-release-platform="linux"] b svg')).toHaveCount(1);
     await expect(dialog.locator('[data-release-platform="windows"]'))
         .toContainText(release.platforms.windows.detail);
     await expect(dialog.locator('[data-release-platform="macos"]'))
@@ -594,7 +641,11 @@ test("the generated release manifest preserves the Windows primary action and ma
         .toContainText(release.platforms.linux.detail);
     await expect(dialog.locator("[data-platform-install-note]")).toHaveCount(0);
     await page.locator("[data-mac-download-toggle]").click();
+    await expect(dialog.locator('[data-release-platform="macos-arm64"] b svg')).toHaveCount(1);
+    await expect(dialog.locator('[data-release-platform="macos-x86_64"] b svg')).toHaveCount(1);
     await expect(page.locator("[data-mac-download-options]")).toBeVisible();
+    await expect(dialog.locator('[data-release-platform="windows"]')).toHaveCSS("opacity", "0.38");
+    await expect(dialog.locator('[data-release-platform="linux"]')).toHaveCSS("opacity", "0.38");
 });
 
 test.describe("wide Home hero art direction", () => {

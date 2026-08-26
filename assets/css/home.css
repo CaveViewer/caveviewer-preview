@@ -271,10 +271,17 @@ body.platform-dialog-open { overflow: hidden; }
     cursor: pointer;
     font: inherit;
     text-align: left;
-    transition: background .2s ease;
+    transition: background .2s ease, opacity .2s ease;
 }
 .platform-download__options > a:hover,
 .platform-download__mac-option > button:hover { background: rgba(81,199,243,.08); }
+.platform-download__options:has([data-mac-download-toggle][aria-expanded="true"]) > a {
+    opacity: .38;
+}
+.platform-download__options:has([data-mac-download-toggle][aria-expanded="true"]) > a:hover,
+.platform-download__options:has([data-mac-download-toggle][aria-expanded="true"]) > a:focus-visible {
+    opacity: .78;
+}
 .platform-download__options > a > span,
 .platform-download__mac-option > button > span {
     display: flex;
@@ -294,23 +301,9 @@ body.platform-dialog-open { overflow: hidden; }
     color: var(--cyan);
     font-size: 0;
 }
-.platform-download__options > a > b::before,
-.platform-download__options > a > b::after {
-    position: absolute;
-    content: "";
-}
-.platform-download__options > a > b::before {
-    width: 1.5px;
-    height: 11px;
-    background: currentColor;
-    transform: translateY(-2px);
-}
-.platform-download__options > a > b::after {
-    width: 7px;
-    height: 7px;
-    border-right: 1.5px solid currentColor;
-    border-bottom: 1.5px solid currentColor;
-    transform: translateY(3px) rotate(45deg);
+.platform-download__options > a > b svg {
+    width: 18px;
+    height: 18px;
 }
 .platform-download__mac-option > button > b::after {
     width: 8px;
@@ -333,12 +326,30 @@ body.platform-dialog-open { overflow: hidden; }
     min-height: 54px;
     padding: 10px 12px;
     display: flex;
-    flex-direction: column;
-    justify-content: center;
-    gap: 4px;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
     border: 1px solid rgba(171,216,233,.18);
     background: rgba(2,10,14,.72);
     color: #eaf3f5;
+}
+.platform-download__mac-choices a > span {
+    display: flex;
+    min-width: 0;
+    flex-direction: column;
+    gap: 4px;
+}
+.platform-download__mac-choices a > b {
+    display: grid;
+    width: 20px;
+    height: 20px;
+    flex: 0 0 20px;
+    place-items: center;
+    color: var(--cyan);
+}
+.platform-download__mac-choices a > b svg {
+    width: 18px;
+    height: 18px;
 }
 .platform-download__mac-choices a:hover { border-color: rgba(81,199,243,.52); }
 .platform-download__mac-choices p {
@@ -504,7 +515,7 @@ body.platform-dialog-open { overflow: hidden; }
     .hero__lead { max-width: 92%; margin-top: clamp(10px, 1.8svh, 16px); font-size: var(--hero-lead-size); line-height: 1.6; }
     .hero__actions { display: grid; grid-template-columns: 1fr; gap: 8px; margin-top: clamp(10px, 2svh, 18px); max-width: 100%; }
     .hero__actions .button { min-height: 42px; padding-inline: 12px; gap: 8px; font-size: 8.5px; letter-spacing: .07em; }
-    .platform-download { width: 100%; margin-top: 14px; }
+    .platform-download { width: 100%; margin-top: clamp(18px, 3svh, 24px); }
     .platform-download__primary { min-height: 62px; }
     .platform-download__dialog {
         position: fixed;

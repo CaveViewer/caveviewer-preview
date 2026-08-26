@@ -292,6 +292,8 @@ def test_preview_release_manifest_generates_every_download_reference() -> None:
     assert '<!-- Generated from assets/data/release.json by ' in index
     assert f'href="{expected_urls["windows"]}" data-primary-download' in index
     assert all(url in index for url in expected_urls.values())
+    assert index.count('<path d="M12 3v11m0 0 4-4m-4 4-4-4M5 17v3h14v-3"') == 6
+    assert '<b aria-hidden="true">↓</b>' not in index
     assert "data-platform-install-note=" not in index
     for platform in (platforms["windows"], platforms["macos"], platforms["linux"]):
         assert platform["install_note"] in docs
@@ -549,6 +551,11 @@ def test_preview_uses_one_header_and_has_no_member_profile_routes() -> None:
     global_styles = (SITE_ROOT / "assets/css/global.css").read_text(encoding="utf-8")
     assert "max-height: calc(100dvh - var(--header-h) - 8px);" in global_styles
     assert "overflow-y: auto;" in global_styles
+    assert "width: 44px;" in global_styles
+    assert "min-width: 44px;" in global_styles
+    assert "height: 44px;" in global_styles
+
+    assert "padding: 10px;" in dropdown_styles
 
     contact = (SITE_ROOT / "contact.html").read_text(encoding="utf-8")
     assert 'href="contact.html" aria-current="page">Contact</a>' in contact

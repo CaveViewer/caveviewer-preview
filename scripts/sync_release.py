@@ -169,6 +169,12 @@ def render_release_picker(release: dict[str, Any]) -> str:
     )
     channel_label = f"{release['product']} {release['channel']} {release['version']}"
     dialog_note = chooser["dialog_note"].format(version=release["version"])
+    download_glyph = (
+        '<svg viewBox="0 0 24 24" width="20" height="20">'
+        '<path d="M12 3v11m0 0 4-4m-4 4-4-4M5 17v3h14v-3" '
+        'fill="none" stroke="currentColor" stroke-width="2" '
+        'stroke-linecap="round" stroke-linejoin="round"/></svg>'
+    )
 
     return "\n".join(
         (
@@ -182,7 +188,7 @@ def render_release_picker(release: dict[str, Any]) -> str:
             f'        <strong data-primary-label>{_text(windows["primary_label"])}</strong>',
             f'        <small data-primary-detail>{_text(release["channel"])} {_text(release["version"])} · {_text(windows["detail"])}</small>',
             "    </span>",
-            '    <b aria-hidden="true"><svg viewBox="0 0 24 24" width="20" height="20"><path d="M12 3v11m0 0 4-4m-4 4-4-4M5 17v3h14v-3" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></b>',
+            f'    <b aria-hidden="true">{download_glyph}</b>',
             "</a>",
             "",
             f'<button class="platform-download__alternatives" type="button" data-platform-dialog-open>{_text(chooser["other_platforms_label"])}</button>',
@@ -197,7 +203,7 @@ def render_release_picker(release: dict[str, Any]) -> str:
             f'        <a href="{_attribute(windows_url)}" data-release-platform="windows">',
             "            <span>",
             f'                <strong>{_text(windows["label"])}</strong><small>{_text(windows["detail"])}</small>',
-            "            </span><b aria-hidden=\"true\">↓</b>",
+            f'            </span><b aria-hidden="true">{download_glyph}</b>',
             "        </a>",
             "",
             '        <div class="platform-download__mac-option">',
@@ -207,8 +213,8 @@ def render_release_picker(release: dict[str, Any]) -> str:
             "                </span><b aria-hidden=\"true\">›</b>",
             "            </button>",
             '            <div class="platform-download__mac-choices" id="mac-download-options" data-mac-download-options hidden>',
-            f'                <a href="{_attribute(arm64_url)}" data-release-platform="macos-arm64"><strong>{_text(mac_architectures["arm64"]["label"])}</strong><small>{_text(mac_architectures["arm64"]["detail"])}</small></a>',
-            f'                <a href="{_attribute(x86_64_url)}" data-release-platform="macos-x86_64"><strong>{_text(mac_architectures["x86_64"]["label"])}</strong><small>{_text(mac_architectures["x86_64"]["detail"])}</small></a>',
+            f'                <a href="{_attribute(arm64_url)}" data-release-platform="macos-arm64"><span><strong>{_text(mac_architectures["arm64"]["label"])}</strong><small>{_text(mac_architectures["arm64"]["detail"])}</small></span><b aria-hidden="true">{download_glyph}</b></a>',
+            f'                <a href="{_attribute(x86_64_url)}" data-release-platform="macos-x86_64"><span><strong>{_text(mac_architectures["x86_64"]["label"])}</strong><small>{_text(mac_architectures["x86_64"]["detail"])}</small></span><b aria-hidden="true">{download_glyph}</b></a>',
             f'                <p>{_text(macos["help"])}</p>',
             "            </div>",
             "        </div>",
@@ -216,7 +222,7 @@ def render_release_picker(release: dict[str, Any]) -> str:
             f'        <a href="{_attribute(linux_url)}" data-release-platform="linux">',
             "            <span>",
             f'                <strong>{_text(linux["label"])}</strong><small>{_text(linux["detail"])}</small>',
-            "            </span><b aria-hidden=\"true\">↓</b>",
+            f'            </span><b aria-hidden="true">{download_glyph}</b>',
             "        </a>",
             "    </div>",
             "",

@@ -406,9 +406,9 @@ main [id] {
     }
 
     .header-download {
-        width: 36px;
-        min-width: 36px;
-        min-height: 36px;
+        width: 44px;
+        min-width: 44px;
+        min-height: 44px;
         margin-left: auto;
         padding: 0;
         font-size: var(--small-text-min);
@@ -420,8 +420,8 @@ main [id] {
         position: relative;
         z-index: 105;
         display: grid;
-        width: 36px;
-        height: 36px;
+        width: 44px;
+        height: 44px;
         padding: 0;
         place-items: center;
         border: 1px solid rgba(242, 217, 140, .28);
@@ -442,28 +442,28 @@ main [id] {
 
     .menu-toggle > span:not(.sr-only) {
         position: absolute;
-        right: 10px;
-        left: 10px;
+        right: 12px;
+        left: 12px;
         height: 1px;
         background: currentColor;
         transition: transform .2s ease, top .2s ease;
     }
 
     .menu-toggle > span:first-child {
-        top: 13px;
+        top: 17px;
     }
 
     .menu-toggle > span:nth-child(2) {
-        top: 21px;
+        top: 25px;
     }
 
     .menu-toggle[aria-expanded="true"] > span:first-child {
-        top: 17px;
+        top: 21px;
         transform: rotate(45deg);
     }
 
     .menu-toggle[aria-expanded="true"] > span:nth-child(2) {
-        top: 17px;
+        top: 21px;
         transform: rotate(-45deg);
     }
 
@@ -526,7 +526,7 @@ main [id] {
 
 @media (max-width: 390px) {
     .header-download {
-        min-width: 36px;
+        min-width: 44px;
         padding: 0;
     }
 }
