@@ -22,8 +22,8 @@ body.page-contact {
     display: grid;
     align-items: start;
     /* Fill a normal viewport, but let the document grow when its form does. */
-    min-height: calc(100vh - 36px);
-    min-height: calc(100svh - 36px);
+    min-height: calc(100vh - var(--site-endcap-h));
+    min-height: calc(100svh - var(--site-endcap-h));
     overflow: visible;
     padding: calc(var(--header-h) + clamp(40px, 5vw, 72px)) 0 48px;
     background:

@@ -107,12 +107,11 @@ test("the mobile navigation is keyboard-operable", async ({ page }) => {
     const headerDownload = page.locator(".header-download");
     const navigation = page.getByRole("navigation", { name: "Primary navigation" });
 
-    for (const control of [headerDownload, menuToggle]) {
-        expect(await control.evaluate(element => {
-            const bounds = element.getBoundingClientRect();
-            return { height: bounds.height, width: bounds.width };
-        })).toEqual({ height: 44, width: 44 });
-    }
+    await expect(headerDownload).toBeHidden();
+    expect(await menuToggle.evaluate(element => {
+        const bounds = element.getBoundingClientRect();
+        return { height: bounds.height, width: bounds.width };
+    })).toEqual({ height: 44, width: 44 });
 
     await expect(menuToggle).toHaveAttribute("aria-label", "Open navigation");
     await menuToggle.focus();
@@ -157,7 +156,7 @@ test("the mobile navigation is keyboard-operable", async ({ page }) => {
     await page.keyboard.press("Tab");
     await expect(navigation.getByRole("link", { name: "Team" })).toBeFocused();
     await page.keyboard.press("Tab");
-    await expect(navigation.getByRole("link", { name: "Projects" })).toBeFocused();
+    await expect(navigation.getByRole("link", { name: "Mapping Projects" })).toBeFocused();
     await page.keyboard.press("Tab");
     await expect(navigation.getByRole("link", { name: "Sponsors" })).toBeFocused();
     await page.keyboard.press("Tab");
@@ -281,13 +280,36 @@ test("the shared header switches cleanly between inline and compact navigation",
     await page.goto("advantage.html", { waitUntil: "networkidle" });
     await expect(navigation).toHaveCSS("position", "static");
     await expect(menuToggle).toHaveCSS("display", "none");
+    await expect(page.locator(".header-download")).toBeVisible();
     await expectNoHorizontalOverflow(page);
 
     await page.setViewportSize({ width: 900, height: 900 });
     await expect(navigation).toHaveCSS("position", "fixed");
     await expect(menuToggle).toHaveCSS("display", "grid");
+    await expect(page.locator(".header-download")).toBeHidden();
     await menuToggle.click();
     await expect(navigation).toHaveClass(/is-open/);
+    await expectNoHorizontalOverflow(page);
+});
+
+test("Docs tables stack without internal horizontal scrolling on phones", async ({ page }) => {
+    await page.setViewportSize({ width: 430, height: 932 });
+    await page.goto("docs.html", { waitUntil: "networkidle" });
+
+    const tables = page.locator(".docs-article table");
+    expect(await tables.count()).toBeGreaterThan(0);
+    for (const table of await tables.all()) {
+        expect(await table.evaluate(element => ({
+            clientWidth: element.clientWidth,
+            scrollWidth: element.scrollWidth,
+        }))).toEqual(expect.objectContaining({
+            clientWidth: expect.any(Number),
+            scrollWidth: expect.any(Number),
+        }));
+        expect(await table.evaluate(element => element.scrollWidth <= element.clientWidth + 1))
+            .toBe(true);
+    }
+    await expect(tables.first().locator("tbody tr").first()).toHaveCSS("display", "block");
     await expectNoHorizontalOverflow(page);
 });
 
@@ -334,7 +356,7 @@ test("Projects presents the two original expedition videos in the Feature layout
     const videos = page.locator(".feature-section__visual--video iframe");
 
     await navigation.getByText("Team & Partners", { exact: true }).click();
-    await expect(navigation.getByRole("link", { name: "Projects" })).toHaveAttribute(
+    await expect(navigation.getByRole("link", { name: "Mapping Projects" })).toHaveAttribute(
         "aria-current",
         "page",
     );
@@ -425,7 +447,7 @@ test("essential labels, metadata, and prose retain readable minimums at mobile a
 
     await expectFontSizeAtLeast(page.locator(".hero__lead"), 14);
     await expectFontSizeAtLeast(page.locator(
-        ".header-download, .platform-download__primary small, .platform-download__alternatives, .site-endcap__inner",
+        ".platform-download__primary small, .platform-download__alternatives, .site-endcap__inner",
     ));
     await page.locator("[data-platform-dialog-open]").click();
     await page.locator("[data-mac-download-toggle]").click();
@@ -448,7 +470,7 @@ test("essential labels, metadata, and prose retain readable minimums at mobile a
 
     await page.goto("contact.html", { waitUntil: "networkidle" });
     await expectFontSizeAtLeast(page.locator(
-        ".header-download, .contact-form__field > label, .contact-form__submit, .site-endcap__inner",
+        ".contact-form__field > label, .contact-form__submit, .site-endcap__inner",
     ));
     await expectNoHorizontalOverflow(page);
 

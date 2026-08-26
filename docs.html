@@ -33,13 +33,13 @@
                 <summary>Team &amp; Partners</summary>
                 <div class="primary-nav__dropdown-menu">
                     <a href="about.html">Team</a>
-                    <a href="media.html">Projects</a>
+                    <a href="media.html">Mapping Projects</a>
                     <a href="sponsors.html">Sponsors</a>
                 </div>
             </details>
             <a href="contact.html">Contact</a>
         </nav>
-        <a class="header-download" href="index.html#get-caveviewer" aria-label="Download CaveViewer"><span class="header-download__label">Download</span><svg viewBox="0 0 24 24" width="17" height="17" aria-hidden="true"><path d="M12 3v11m0 0 4-4m-4 4-4-4M5 17v3h14v-3" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+        <a class="header-download" href="docs.html#installation" aria-label="Download CaveViewer"><span class="header-download__label">Download</span><svg viewBox="0 0 24 24" width="17" height="17" aria-hidden="true"><path d="M12 3v11m0 0 4-4m-4 4-4-4M5 17v3h14v-3" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
         <button class="menu-toggle" type="button" aria-label="Open navigation" aria-expanded="false" data-menu-toggle>
             <span></span><span></span><span class="sr-only">Toggle navigation</span>
         </button>
@@ -55,7 +55,7 @@
 <p>CaveViewer is a desktop application for recent Windows, macOS, and
 Linux computers. A dedicated graphics card is not required, although
 faster hardware can load and display complex maps more quickly.</p>
-<table class="docs-requirements-table">
+<table class="docs-requirements-table docs-mobile-table--requirements">
 <thead>
 <tr class="header">
 <th>Area</th>
@@ -139,7 +139,7 @@ do not require a cache rebuild.</li>
 <p>Change one setting at a time and test the same part of the map after
 each change. This makes it much easier to identify what helped.</p>
 <h2 id="quick-recommendations">Quick Recommendations</h2>
-<table>
+<table class="docs-mobile-table--recommendations">
 <thead>
 <tr class="header">
 <th>What you notice</th>
@@ -217,7 +217,7 @@ and keeps the existing cache available until the new one is complete.
 Keep the original OBJ or GLB file and its texture files accessible;
 CaveViewer needs the source to rebuild the cache.</p>
 <h3 id="map-structure-and-upload-size">Chunk and Upload Size</h3>
-<table>
+<table class="docs-mobile-table--settings">
 <thead>
 <tr class="header">
 <th>Setting</th>
@@ -253,7 +253,7 @@ map's behavior suggests it.</p>
 <h3 id="obj-import-workload">OBJ Import Workload</h3>
 <p>These settings affect OBJ files. GLB imports do not use the
 OBJ-specific controls.</p>
-<table>
+<table class="docs-mobile-table--settings">
 <thead>
 <tr class="header">
 <th>Setting</th>
@@ -281,7 +281,7 @@ significant.</td>
 </tbody>
 </table>
 <h3 id="cache-building">Cache Building</h3>
-<table>
+<table class="docs-mobile-table--settings">
 <thead>
 <tr class="header">
 <th>Setting</th>
@@ -323,7 +323,7 @@ make the entire import slower.</p>
 control memory use, background loading, and how much upload work
 CaveViewer may perform during each rendered frame.</p>
 <h3 id="memory">Memory Limits</h3>
-<table>
+<table class="docs-mobile-table--settings">
 <thead>
 <tr class="header">
 <th>Setting</th>
@@ -364,7 +364,7 @@ the usable budget in GB, not the total system RAM.</td>
 distance. It limits the amount of work that can remain resident and may
 cause map data to be reloaded more often.</p>
 <h3 id="background-loading">Background Loading</h3>
-<table>
+<table class="docs-mobile-table--settings">
 <thead>
 <tr class="header">
 <th>Setting</th>
@@ -395,7 +395,7 @@ headroom.</td>
 <p>CaveViewer may start with fewer loading workers than the configured
 maximum and increase the number only when available memory permits.</p>
 <h3 id="per-frame-uploads">Per-Frame Uploads</h3>
-<table>
+<table class="docs-mobile-table--settings">
 <thead>
 <tr class="header">
 <th>Setting</th>
@@ -523,7 +523,7 @@ different <strong>Import chunk size</strong> or a smaller <strong>Max
 upload group size</strong>, then rebuild only that map's cache.</p>
 <h2 id="restore-the-defaults">Restore Default Settings</h2>
 <p>If tuning makes performance worse, restore these values:</p>
-<table>
+<table class="docs-mobile-table--defaults">
 <thead>
 <tr class="header">
 <th>Streaming</th>
@@ -565,7 +565,7 @@ upload group size</strong>, then rebuild only that map's cache.</p>
 </tr>
 </tbody>
 </table>
-<table>
+<table class="docs-mobile-table--defaults">
 <thead>
 <tr class="header">
 <th>Import</th>

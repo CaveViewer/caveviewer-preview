@@ -489,15 +489,15 @@ def test_preview_uses_one_header_and_has_no_member_profile_routes() -> None:
             assert f'href="docs.html#{section}"' in nav
         assert nav.count('href="docs.html#') == 4
         assert 'assets/css/navigation-dropdown.css' in text
-        assert 'href="media.html">Projects</a>' in text or (
-            'href="media.html" aria-current="page">Projects</a>' in text
+        assert 'href="media.html">Mapping Projects</a>' in text or (
+            'href="media.html" aria-current="page">Mapping Projects</a>' in text
         )
         assert (
             text.index(">Why CaveViewer</a>")
             < text.index(">Docs</summary>")
             < text.index(">Team &amp; Partners</summary>")
             < text.index(">Team</a>")
-            < text.index(">Projects</a>")
+            < text.index(">Mapping Projects</a>")
         )
         assert 'href="about.html">Team</a>' in text or (
             'href="about.html" aria-current="page">Team</a>' in text
@@ -509,11 +509,14 @@ def test_preview_uses_one_header_and_has_no_member_profile_routes() -> None:
         assert 'href="contact.html">Contact</a>' in text or (
             'href="contact.html" aria-current="page">Contact</a>' in text
         )
-        expected_download = (
-            '#get-caveviewer' if page.name == "index.html"
-            else 'index.html#get-caveviewer'
+        top_level_nav = re.sub(
+            r'<div class="primary-nav__dropdown-menu">.*?</div>',
+            "",
+            nav,
+            flags=re.DOTALL,
         )
-        assert f'class="header-download" href="{expected_download}"' in text
+        assert top_level_nav.count('aria-current="page"') <= 1
+        assert 'class="header-download" href="docs.html#installation"' in text
         assert "member-" not in text
 
     about = (SITE_ROOT / "about.html").read_text(encoding="utf-8")
@@ -558,7 +561,7 @@ def test_preview_uses_one_header_and_has_no_member_profile_routes() -> None:
     assert "max-height: calc(100dvh - var(--header-h) - 8px);" in global_styles
     assert "overflow-y: auto;" in global_styles
     assert "width: 44px;" in global_styles
-    assert "min-width: 44px;" in global_styles
+    assert ".header-download {\n        display: none;\n    }" in global_styles
     assert "height: 44px;" in global_styles
 
     assert "padding: 10px;" in dropdown_styles
@@ -592,7 +595,7 @@ def test_preview_uses_one_header_and_has_no_member_profile_routes() -> None:
     assert ">View Ginormous Maps<" in advantage
 
     media = (SITE_ROOT / "media.html").read_text(encoding="utf-8")
-    assert 'href="media.html" aria-current="page">Projects</a>' in media
+    assert 'href="media.html" aria-current="page">Mapping Projects</a>' in media
     assert '<section class="media-page" aria-labelledby="media-page-title">' in media
     assert "Dives behind the data" not in media
     assert media.count('class="media-page__video-title"') == 2
@@ -715,7 +718,7 @@ def test_contact_layout_uses_content_safe_document_flow() -> None:
     ) in styles
     assert "grid-template-rows: minmax(0, 1fr) 36px;" not in styles
     assert "    height: 100svh;" not in styles
-    assert "min-height: calc(100svh - 36px);" in styles
+    assert "min-height: calc(100svh - var(--site-endcap-h));" in styles
 
 
 def test_about_team_captions_use_compact_spacing() -> None:

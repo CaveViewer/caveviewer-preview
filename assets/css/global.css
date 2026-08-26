@@ -30,6 +30,7 @@
     --hero-lead-size: clamp(16px, 1.2vw, 18px);
     --hero-title-line-height: .93;
     --hero-title-letter-spacing: -.055em;
+    --site-endcap-h: 40px;
     /* Visible labels and metadata use this floor; decorative symbols and
        visually hidden form controls do not carry essential information. */
     --small-text-min: 12px;
@@ -262,6 +263,7 @@ html.reveal-enhanced [data-reveal].is-visible {
 
 .header-download {
     display: inline-flex;
+    align-self: center;
     align-items: center;
     justify-content: center;
     gap: 8px;
@@ -272,10 +274,11 @@ html.reveal-enhanced [data-reveal].is-visible {
     border: 1px solid rgba(242, 217, 140, .34);
     background: transparent;
     color: var(--title);
+    font-family: var(--display);
     font-size: 13px;
     font-weight: 700;
     letter-spacing: .015em;
-    line-height: 1.15;
+    line-height: normal;
     white-space: nowrap;
     transition: border-color .18s ease, color .18s ease;
 }
@@ -334,7 +337,7 @@ main [id] {
 /* The canonical pages use this compact endcap, not the retired full footer. */
 .site-endcap {
     flex: 0 0 auto;
-    min-height: 36px;
+    min-height: var(--site-endcap-h);
     overflow: visible;
     border: 0;
     background: transparent;
@@ -345,7 +348,7 @@ main [id] {
     grid-template-columns: auto minmax(0, 1fr) auto;
     align-items: center;
     width: min(calc(100% - 32px), var(--max));
-    min-height: 36px;
+    min-height: var(--site-endcap-h);
     column-gap: 6px;
     padding-block: 6px;
     margin-inline: auto;
@@ -355,7 +358,7 @@ main [id] {
 
 .site-endcap__copyright,
 .site-endcap__partner {
-    font-size: var(--small-text-min);
+    font-size: calc(var(--small-text-min) + 1px);
 }
 
 .site-endcap__partner {
@@ -406,15 +409,8 @@ main [id] {
     }
 
     .header-download {
-        width: 44px;
-        min-width: 44px;
-        min-height: 44px;
-        margin-left: auto;
-        padding: 0;
-        font-size: var(--small-text-min);
+        display: none;
     }
-
-    .header-download__label { display: none; }
 
     .menu-toggle {
         position: relative;
@@ -422,6 +418,7 @@ main [id] {
         display: grid;
         width: 44px;
         height: 44px;
+        margin-left: auto;
         padding: 0;
         place-items: center;
         border: 1px solid rgba(242, 217, 140, .28);
@@ -521,13 +518,6 @@ main [id] {
     .primary-nav > a:focus-visible {
         background: rgba(var(--accent-rgb), .10);
         color: var(--title);
-    }
-}
-
-@media (max-width: 390px) {
-    .header-download {
-        min-width: 44px;
-        padding: 0;
     }
 }
 

@@ -2,7 +2,7 @@
     --hero-rail-bottom: clamp(14px, 2.2svh, 30px);
     --hero-tile-h: clamp(104px, 14svh, 142px);
     position: relative;
-    height: calc(100svh - 36px);
+    height: calc(100svh - var(--site-endcap-h));
     min-height: 0;
     isolation: isolate;
     background: #02070a;
@@ -493,7 +493,7 @@ body.platform-dialog-open { overflow: hidden; }
         --hero-rail-bottom: clamp(8px, 1.4svh, 14px);
         --hero-tile-h: clamp(54px, 8.8svh, 72px);
         height: auto;
-        min-height: calc(100svh - 36px);
+        min-height: calc(100svh - var(--site-endcap-h));
     }
     .hero__media { background-size: 100% 100%, 100% 100%, 100% 100%, 100% 100%, cover; background-position: center, center, center, center, 64% center; }
     .hero__veil {
@@ -504,7 +504,7 @@ body.platform-dialog-open { overflow: hidden; }
     }
     .hero__content {
         height: auto;
-        min-height: calc(100svh - 36px);
+        min-height: calc(100svh - var(--site-endcap-h));
         padding-top: calc(var(--header-h) + clamp(22px, 5svh, 42px));
         padding-bottom: clamp(32px, 6svh, 64px);
         align-items: flex-start;
