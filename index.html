@@ -7,10 +7,10 @@
     <title>CaveViewer — Explore What Lies Beneath (Site Preview)</title>
     <meta name="description" content="CaveViewer is free software for exploring extremely large 3-D cave scans on Windows, macOS, and Linux.">
     <meta name="robots" content="noindex">
-    <link rel="stylesheet" href="assets/css/global.css">
-    <link rel="stylesheet" href="assets/css/navigation-dropdown.css">
+    <link rel="stylesheet" href="assets/css/global.css?v=20260826-6">
+    <link rel="stylesheet" href="assets/css/navigation-dropdown.css?v=20260826-3">
     <link rel="stylesheet" href="assets/css/readability.css">
-    <link rel="stylesheet" href="assets/css/home.css">
+    <link rel="stylesheet" href="assets/css/home.css?v=20260826-3">
     <link rel="stylesheet" href="assets/css/app-theme.css">
 </head>
 <body class="page-home">
@@ -25,13 +25,8 @@
                 <div class="primary-nav__dropdown-menu">
                     <a href="docs.html#system-requirements">System Requirements</a>
                     <a href="docs.html#installation">Installation</a>
-                    <a href="docs.html#before-you-change-anything">Before You Tune</a>
-                    <a href="docs.html#quick-recommendations">Quick Recommendations</a>
-                    <a href="docs.html#import-settings">Import Tuning</a>
-                    <a href="docs.html#streaming-settings">Streaming Tuning</a>
-                    <a href="docs.html#recommended-tuning-profiles">Tuning Profiles</a>
+                    <a href="docs.html#before-you-change-anything">Performance Tuning</a>
                     <a href="docs.html#troubleshooting-by-symptom">Troubleshooting</a>
-                    <a href="docs.html#restore-the-defaults">Restore Default Settings</a>
                 </div>
             </details>
             <details class="primary-nav__dropdown">
@@ -44,7 +39,7 @@
             </details>
             <a href="contact.html">Contact</a>
         </nav>
-        <a class="header-download" href="#get-caveviewer">Download</a>
+        <a class="header-download" href="#get-caveviewer" aria-label="Download CaveViewer"><span class="header-download__label">Download</span><svg viewBox="0 0 24 24" width="17" height="17" aria-hidden="true"><path d="M12 3v11m0 0 4-4m-4 4-4-4M5 17v3h14v-3" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
         <button class="menu-toggle" type="button" aria-label="Open navigation" aria-expanded="false" data-menu-toggle>
             <span></span><span></span><span class="sr-only">Toggle navigation</span>
         </button>
@@ -59,19 +54,18 @@
             <div class="hero__copy" data-reveal>
                 <h1 id="hero-title">Explore what<br><span>lies beneath</span></h1>
                 <p class="hero__lead">CaveViewer makes exploring massive 3-D maps accessible to everyone. Designed for cave divers, explorers, cartographers, and 3-D mapping enthusiasts, it uses an innovative rendering technique to display extremely large maps on anything from lightweight laptops to high-end workstations. The app is completely free—no advertisements, no subscriptions, no online accounts, and no hidden costs.</p>
-                <p class="hero__formats">Bring a <strong>textured OBJ map</strong> with its <strong>matching MTL file</strong>. For best results, use a recent Windows, macOS, or Linux desktop with 16 GB of RAM and 256 GB of free disk space; a <strong>dedicated GPU is not required</strong>.</p>
                 <div class="platform-download" id="get-caveviewer" data-platform-download>
                     <!-- release-picker:start -->
                         <!-- Generated from assets/data/release.json by scripts/sync_release.py. -->
                         <script type="application/json" data-release-data>
-                        {"channel":"Preview","chooser":{"dialog_note":"Downloads start directly from the official {version} build.","other_platforms_label":"Other platforms","title":"Choose your platform","unknown_primary_label":"Choose your desktop platform"},"platforms":{"linux":{"artifact":"CaveViewer-1.0.92-x86_64.AppImage","detail":"x86_64 AppImage","install_note":"Allow the AppImage to run in your file manager, then open it.","label":"Linux","primary_label":"Get CaveViewer for Linux"},"macos":{"architectures":{"arm64":{"artifact":"CaveViewer-1.0.92-macos-arm64.dmg","detail":"M1 or newer","label":"Apple silicon"},"x86_64":{"artifact":"CaveViewer-1.0.92-macos-x86_64.dmg","detail":"Intel processor","label":"Intel"}},"detail":"Choose Apple silicon or Intel","help":"Check Apple menu \u2192 About This Mac. Look for \u201cChip\u201d or \u201cProcessor.\u201d","install_note":"Choose your Mac type, then drag CaveViewer into Applications.","label":"macOS","primary_label":"Get CaveViewer for macOS"},"windows":{"artifact":"CaveViewer-1.0.92-windows.exe","detail":"Windows 10 or 11","install_note":"Run the setup file. If Windows flags an unrecognized publisher, verify the official CaveViewer download and inspect the warning before proceeding.","label":"Windows","primary_label":"Get CaveViewer for Windows"}},"product":"CaveViewer","repository":"https://github.com/CaveViewer/CaveViewer","schema_version":1,"version":"1.0.92"}
+                        {"channel":"Preview","chooser":{"dialog_note":"Downloads start directly from the official {version} build.","other_platforms_label":"Other platforms","title":"Choose your platform","unknown_primary_label":"Choose your desktop platform"},"platforms":{"linux":{"artifact":"CaveViewer-1.0.92-x86_64.AppImage","detail":"x86_64 AppImage","install_note":"Allow the x86_64 AppImage to run, then open it. Linux does not display an equivalent publisher-verification warning.","label":"Linux","primary_label":"Get CaveViewer for Linux"},"macos":{"architectures":{"arm64":{"artifact":"CaveViewer-1.0.92-macos-arm64.dmg","detail":"M1 or newer","label":"Apple silicon"},"x86_64":{"artifact":"CaveViewer-1.0.92-macos-x86_64.dmg","detail":"Intel processor","label":"Intel"}},"detail":"Choose Apple silicon or Intel","help":"Check Apple menu \u2192 About This Mac. Look for \u201cChip\u201d or \u201cProcessor.\u201d","install_note":"Choose the download for Apple silicon or Intel, then drag CaveViewer into Applications. macOS may be unable to verify CaveViewer.","label":"macOS","primary_label":"Get CaveViewer for macOS","security":{"action":"After confirming the download source, go to System Settings \u2192 Privacy & Security \u2192 Open Anyway. Do not override a warning that says the app will damage your computer.","explanation":"Apple does not yet recognize its developer.","guidance_url":"https://support.apple.com/guide/mac-help/open-a-mac-app-from-an-unknown-developer-mh40616/mac"}},"windows":{"artifact":"CaveViewer-1.0.92-windows.exe","detail":"Windows 10 or 11","install_note":"Run the setup file. Windows may identify CaveViewer as an unrecognized app.","label":"Windows","primary_label":"Get CaveViewer for Windows","security":{"action":"Depending on your Windows version, select More info \u2192 Run anyway.","explanation":"Microsoft does not yet recognize its publisher. Confirm that the installer came from the official CaveViewer site before proceeding.","guidance_url":"https://learn.microsoft.com/en-us/windows/apps/package-and-deploy/smartscreen-reputation"}}},"product":"CaveViewer","repository":"https://github.com/CaveViewer/CaveViewer","schema_version":1,"version":"1.0.92"}
                         </script>
                         <a class="platform-download__primary" href="https://github.com/CaveViewer/CaveViewer/releases/download/v1.0.92/CaveViewer-1.0.92-windows.exe" data-primary-download>
                             <span>
                                 <strong data-primary-label>Get CaveViewer for Windows</strong>
                                 <small data-primary-detail>Preview 1.0.92 · Windows 10 or 11</small>
                             </span>
-                            <b aria-hidden="true">↓</b>
+                            <b aria-hidden="true"><svg viewBox="0 0 24 24" width="20" height="20"><path d="M12 3v11m0 0 4-4m-4 4-4-4M5 17v3h14v-3" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></b>
                         </a>
 
                         <button class="platform-download__alternatives" type="button" data-platform-dialog-open>Other platforms</button>
@@ -86,7 +80,6 @@
                                 <a href="https://github.com/CaveViewer/CaveViewer/releases/download/v1.0.92/CaveViewer-1.0.92-windows.exe" data-release-platform="windows">
                                     <span>
                                         <strong>Windows</strong><small>Windows 10 or 11</small>
-                                        <small class="platform-download__install-note" data-platform-install-note="windows">Run the setup file. If Windows flags an unrecognized publisher, verify the official CaveViewer download and inspect the warning before proceeding.</small>
                                     </span><b aria-hidden="true">↓</b>
                                 </a>
 
@@ -94,7 +87,6 @@
                                     <button type="button" aria-expanded="false" aria-controls="mac-download-options" data-mac-download-toggle data-release-platform="macos">
                                         <span>
                                             <strong>macOS</strong><small>Choose Apple silicon or Intel</small>
-                                            <small class="platform-download__install-note" data-platform-install-note="macos">Choose your Mac type, then drag CaveViewer into Applications.</small>
                                         </span><b aria-hidden="true">›</b>
                                     </button>
                                     <div class="platform-download__mac-choices" id="mac-download-options" data-mac-download-options hidden>
@@ -107,7 +99,6 @@
                                 <a href="https://github.com/CaveViewer/CaveViewer/releases/download/v1.0.92/CaveViewer-1.0.92-x86_64.AppImage" data-release-platform="linux">
                                     <span>
                                         <strong>Linux</strong><small>x86_64 AppImage</small>
-                                        <small class="platform-download__install-note" data-platform-install-note="linux">Allow the AppImage to run in your file manager, then open it.</small>
                                     </span><b aria-hidden="true">↓</b>
                                 </a>
                             </div>
@@ -128,9 +119,9 @@
     </section>
 </main>
 
-<footer class="site-endcap"><div class="site-endcap__inner"><span class="site-endcap__copyright">&copy; 2026 CaveViewer</span><span class="site-endcap__partner">Bottomline Projects, Florida Chapter</span><img class="site-endcap__logo" src="assets/icons/caveviewer-cave-profile.svg" width="64" height="32" alt=""></div></footer>
+<footer class="site-endcap"><div class="site-endcap__inner"><span class="site-endcap__copyright">&copy; 2026 CaveViewer</span><a class="site-endcap__partner" href="https://www.bottomlineprojects.com/">Bottomline Projects, Florida Chapter</a><img class="site-endcap__logo" src="assets/icons/caveviewer-cave-profile.svg" width="64" height="32" alt=""></div></footer>
 
-<script src="assets/js/app.js" defer></script>
+<script src="assets/js/app.js?v=20260826" defer></script>
 <script src="assets/js/platform-download.js" defer></script>
 </body>
 </html>

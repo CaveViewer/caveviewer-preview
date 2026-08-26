@@ -16,6 +16,9 @@
   browser checks run for pull requests and `main` without blocking publication.
 - [Pages publication](../../.github/workflows/pages.yml): the exported static
   artifact and deployment workflow.
+- [Release and installation manifest](../../assets/data/release.json): the
+  canonical package metadata and platform guidance rendered into Home and Docs
+  by `scripts/sync_release.py`.
 
 The focused documents and executable contracts linked here are canonical for
 their subjects. The root project README keeps operational details that are most

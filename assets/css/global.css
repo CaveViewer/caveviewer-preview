@@ -111,12 +111,11 @@ button {
     gap: 22px;
     padding: 0 25px;
     border: 1px solid transparent;
-    font-size: var(--small-text-min);
+    font-size: 13px;
     font-weight: 700;
-    letter-spacing: .095em;
+    letter-spacing: .015em;
     line-height: 1.15;
     text-align: center;
-    text-transform: uppercase;
     transition: transform .2s ease, background .2s ease, border-color .2s ease,
         color .2s ease;
 }
@@ -143,6 +142,16 @@ html.reveal-enhanced [data-reveal] {
     transform: translateY(24px);
     transition: opacity .75s cubic-bezier(.2, .8, .2, 1),
         transform .75s cubic-bezier(.2, .8, .2, 1);
+}
+
+/* Keep the first above-the-fold content anchored to the shared page inset. */
+html.reveal-enhanced .advantages-page .feature-section:first-child[data-reveal],
+html.reveal-enhanced .features-page .feature-section:first-child[data-reveal],
+html.reveal-enhanced .media-page .feature-section:first-child[data-reveal],
+html.reveal-enhanced .about-team-grid > [data-reveal]:first-child,
+html.reveal-enhanced .sponsors-page__grid > [data-reveal]:first-child,
+html.reveal-enhanced .contact-page__layout > [data-reveal]:first-child {
+    transform: none;
 }
 
 html.reveal-enhanced [data-reveal].is-visible {
@@ -255,26 +264,33 @@ html.reveal-enhanced [data-reveal].is-visible {
     display: inline-flex;
     align-items: center;
     justify-content: center;
+    gap: 8px;
     flex: 0 0 auto;
     min-width: 124px;
     min-height: 38px;
     padding: 0 13px;
-    border: 1px solid var(--accent-border);
-    background: var(--accent);
-    color: var(--accent-text);
+    border: 1px solid rgba(242, 217, 140, .34);
+    background: transparent;
+    color: var(--title);
     font-size: 13px;
     font-weight: 700;
     letter-spacing: .015em;
     line-height: 1.15;
     white-space: nowrap;
-    transition: background .18s ease, border-color .18s ease, transform .18s ease;
+    transition: border-color .18s ease, color .18s ease;
+}
+
+.header-download svg {
+    width: 17px;
+    height: 17px;
+    flex: 0 0 auto;
 }
 
 .header-download:hover,
 .header-download:focus-visible {
     border-color: var(--accent);
-    background: var(--accent-hover);
-    transform: translateY(-1px);
+    background: transparent;
+    color: var(--accent);
 }
 
 .header-download:focus-visible {
@@ -390,12 +406,15 @@ main [id] {
     }
 
     .header-download {
-        min-width: 104px;
+        width: 36px;
+        min-width: 36px;
         min-height: 36px;
         margin-left: auto;
-        padding-inline: 11px;
+        padding: 0;
         font-size: var(--small-text-min);
     }
+
+    .header-download__label { display: none; }
 
     .menu-toggle {
         position: relative;
@@ -458,7 +477,10 @@ main [id] {
         min-height: 0;
         gap: 0;
         padding: 6px;
-        overflow: visible;
+        max-height: calc(100dvh - var(--header-h) - 8px);
+        overflow-x: hidden;
+        overflow-y: auto;
+        overscroll-behavior: contain;
         border: 1px solid rgba(242, 217, 140, .20);
         border-radius: 0;
         background: linear-gradient(145deg, rgba(29, 29, 38, .99), rgba(14, 14, 19, .99));
@@ -504,8 +526,8 @@ main [id] {
 
 @media (max-width: 390px) {
     .header-download {
-        min-width: 88px;
-        padding-inline: 9px;
+        min-width: 36px;
+        padding: 0;
     }
 }
 

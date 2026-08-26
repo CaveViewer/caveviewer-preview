@@ -27,7 +27,7 @@
 /* Automatically adds columns and rows as sponsors are added to the markup. */
 .sponsors-page__grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(min(100%, 260px), 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 340px), 1fr));
     gap: clamp(14px, 1.6vw, 26px);
     align-items: stretch;
 }
@@ -100,6 +100,15 @@
 .sponsor-card--kiss .sponsor-card__media img { width: min(100%, 395px); }
 
 .sponsor-card--xdeep .sponsor-card__media img { width: min(100%, 190px); }
+
+.sponsor-card--seal .sponsor-card__media img { width: min(100%, 360px); }
+
+.sponsor-card--agisoft .sponsor-card__media img { width: min(100%, 220px); }
+
+.sponsor-card--synergy .sponsor-card__media img {
+    width: min(100%, 310px);
+    filter: brightness(2.1);
+}
 
 .sponsor-card__caption {
     padding: 18px 20px 22px;

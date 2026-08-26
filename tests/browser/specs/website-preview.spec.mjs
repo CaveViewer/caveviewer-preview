@@ -122,13 +122,8 @@ test("the mobile navigation is keyboard-operable", async ({ page }) => {
     for (const label of [
         "System Requirements",
         "Installation",
-        "Before You Tune",
-        "Quick Recommendations",
-        "Import Tuning",
-        "Streaming Tuning",
-        "Tuning Profiles",
+        "Performance Tuning",
         "Troubleshooting",
-        "Restore Default Settings",
     ]) {
         await page.keyboard.press("Tab");
         await expect(navigation.getByRole("link", { name: label, exact: true })).toBeFocused();
@@ -150,6 +145,30 @@ test("the mobile navigation is keyboard-operable", async ({ page }) => {
     await expect(menuToggle).toHaveAttribute("aria-expanded", "false");
     await expect(navigation).not.toHaveClass(/is-open/);
     await expect(menuToggle).toBeFocused();
+});
+
+test("the mobile navigation stays reachable on a short viewport", async ({ page }) => {
+    await page.setViewportSize({ width: 375, height: 320 });
+    await page.goto("docs.html", { waitUntil: "networkidle" });
+
+    await page.locator("[data-menu-toggle]").click();
+    await page.locator(".primary-nav__dropdown summary").first().click();
+
+    const navigation = page.getByRole("navigation", { name: "Primary navigation" });
+    const geometry = await navigation.evaluate(element => {
+        const bounds = element.getBoundingClientRect();
+        return {
+            bottom: bounds.bottom,
+            clientHeight: element.clientHeight,
+            scrollHeight: element.scrollHeight,
+            viewportHeight: window.innerHeight,
+        };
+    });
+
+    expect(geometry.bottom).toBeLessThanOrEqual(geometry.viewportHeight);
+    expect(geometry.scrollHeight).toBeGreaterThan(geometry.clientHeight);
+    await navigation.getByRole("link", { name: "Troubleshooting" }).scrollIntoViewIfNeeded();
+    await expect(navigation.getByRole("link", { name: "Troubleshooting" })).toBeVisible();
 });
 
 test("Sponsors uses responsive cards with official-site links", async ({ page }) => {
@@ -174,7 +193,7 @@ test("Sponsors uses responsive cards with official-site links", async ({ page })
 
         return { height: bounds.height, width: bounds.width };
     })).toEqual({ height: 1, width: 1 });
-    await expect(cards).toHaveCount(2);
+    await expect(cards).toHaveCount(5);
     await expect(kiss).toHaveAttribute("href", "https://www.kissrebreathers.com/");
     await expect(xdeep).toHaveAttribute("href", "https://www.xdeep.eu/");
     await expect(kiss).toHaveAttribute("target", "_blank");
@@ -202,9 +221,11 @@ test("Sponsors uses responsive cards with official-site links", async ({ page })
         });
     });
 
-    expect(mobileLayout).toHaveLength(2);
-    expect(mobileLayout[1].top).toBeGreaterThan(mobileLayout[0].top);
-    expect(mobileLayout[1].left).toBeCloseTo(mobileLayout[0].left, 1);
+    expect(mobileLayout).toHaveLength(5);
+    for (let index = 1; index < mobileLayout.length; index += 1) {
+        expect(mobileLayout[index].top).toBeGreaterThan(mobileLayout[index - 1].top);
+        expect(mobileLayout[index].left).toBeCloseTo(mobileLayout[0].left, 1);
+    }
     await expectNoHorizontalOverflow(page);
 });
 
@@ -357,7 +378,7 @@ test("essential labels, metadata, and prose retain readable minimums at mobile a
     await page.setViewportSize({ width: 390, height: 844 });
     await page.goto("index.html", { waitUntil: "networkidle" });
 
-    await expectFontSizeAtLeast(page.locator(".hero__formats"), 14);
+    await expectFontSizeAtLeast(page.locator(".hero__lead"), 14);
     await expectFontSizeAtLeast(page.locator(
         ".header-download, .platform-download__primary small, .platform-download__alternatives, .site-endcap__inner",
     ));
@@ -394,7 +415,7 @@ test("essential labels, metadata, and prose retain readable minimums at mobile a
     // A 720 × 450 CSS-pixel viewport approximates a 1440 × 900 window at 200% zoom.
     await page.setViewportSize({ width: 720, height: 450 });
     await page.goto("index.html", { waitUntil: "networkidle" });
-    await expectFontSizeAtLeast(page.locator(".hero__formats"), 14);
+    await expectFontSizeAtLeast(page.locator(".hero__lead"), 14);
     await expectNoHorizontalOverflow(page);
 
     await page.goto("about.html", { waitUntil: "networkidle" });
@@ -559,12 +580,13 @@ test("the generated release manifest preserves the Windows primary action and ma
 
     await page.locator("[data-platform-dialog-open]").click();
     await expect(dialog).toHaveAttribute("open", "");
-    await expect(page.locator('[data-platform-install-note="windows"]'))
-        .toHaveText(release.platforms.windows.install_note);
-    await expect(page.locator('[data-platform-install-note="macos"]'))
-        .toHaveText(release.platforms.macos.install_note);
-    await expect(page.locator('[data-platform-install-note="linux"]'))
-        .toHaveText(release.platforms.linux.install_note);
+    await expect(dialog.locator('[data-release-platform="windows"]'))
+        .toContainText(release.platforms.windows.detail);
+    await expect(dialog.locator('[data-release-platform="macos"]'))
+        .toContainText(release.platforms.macos.detail);
+    await expect(dialog.locator('[data-release-platform="linux"]'))
+        .toContainText(release.platforms.linux.detail);
+    await expect(dialog.locator("[data-platform-install-note]")).toHaveCount(0);
     await page.locator("[data-mac-download-toggle]").click();
     await expect(page.locator("[data-mac-download-options]")).toBeVisible();
 });

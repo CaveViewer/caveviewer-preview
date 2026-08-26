@@ -7,10 +7,10 @@
     <title>Documentation — CaveViewer (Site Preview)</title>
     <meta name="description" content="CaveViewer system requirements, installation guidance, and map-performance tuning reference.">
     <meta name="robots" content="noindex">
-    <link rel="stylesheet" href="assets/css/global.css">
-    <link rel="stylesheet" href="assets/css/navigation-dropdown.css">
+    <link rel="stylesheet" href="assets/css/global.css?v=20260826-6">
+    <link rel="stylesheet" href="assets/css/navigation-dropdown.css?v=20260826-3">
     <link rel="stylesheet" href="assets/css/readability.css">
-    <link rel="stylesheet" href="assets/css/docs.css">
+    <link rel="stylesheet" href="assets/css/docs.css?v=20260826-2">
     <link rel="stylesheet" href="assets/css/app-theme.css">
 </head>
 <body class="page-docs">
@@ -25,13 +25,8 @@
                 <div class="primary-nav__dropdown-menu">
                     <a href="docs.html#system-requirements">System Requirements</a>
                     <a href="docs.html#installation">Installation</a>
-                    <a href="docs.html#before-you-change-anything">Before You Tune</a>
-                    <a href="docs.html#quick-recommendations">Quick Recommendations</a>
-                    <a href="docs.html#import-settings">Import Tuning</a>
-                    <a href="docs.html#streaming-settings">Streaming Tuning</a>
-                    <a href="docs.html#recommended-tuning-profiles">Tuning Profiles</a>
+                    <a href="docs.html#before-you-change-anything">Performance Tuning</a>
                     <a href="docs.html#troubleshooting-by-symptom">Troubleshooting</a>
-                    <a href="docs.html#restore-the-defaults">Restore Default Settings</a>
                 </div>
             </details>
             <details class="primary-nav__dropdown">
@@ -44,7 +39,7 @@
             </details>
             <a href="contact.html">Contact</a>
         </nav>
-        <a class="header-download" href="index.html#get-caveviewer">Download</a>
+        <a class="header-download" href="index.html#get-caveviewer" aria-label="Download CaveViewer"><span class="header-download__label">Download</span><svg viewBox="0 0 24 24" width="17" height="17" aria-hidden="true"><path d="M12 3v11m0 0 4-4m-4 4-4-4M5 17v3h14v-3" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
         <button class="menu-toggle" type="button" aria-label="Open navigation" aria-expanded="false" data-menu-toggle>
             <span></span><span></span><span class="sr-only">Toggle navigation</span>
         </button>
@@ -54,7 +49,7 @@
     <section class="docs-page" aria-labelledby="docs-title">
         <div class="docs-page__grid" aria-hidden="true"></div>
         <div class="shell docs-layout">
-            <article class="docs-article">
+<article class="docs-article">
 <h1 class="sr-only" id="docs-title">CaveViewer Documentation</h1>
 <h2 id="system-requirements">System Requirements and Compatibility</h2>
 <p>CaveViewer is a desktop application for recent Windows, macOS, and
@@ -103,22 +98,35 @@ texture sizes, and the computer running CaveViewer. The defaults suit
 most systems; use the tuning guidance below only when you encounter a
 specific limitation.</p>
 <h2 id="installation">Installation</h2>
-<p>Download CaveViewer for your desktop platform from the <a href="index.html#get-caveviewer">CaveViewer home page</a>, then follow the matching instructions:</p>
+<!-- installation-guidance:start -->
+<!-- Generated from assets/data/release.json by scripts/sync_release.py. -->
 <div class="docs-install-grid">
 <section class="docs-install-card" aria-labelledby="install-windows">
 <h3 id="install-windows">Windows</h3>
-<p><strong>Windows 10 or 11:</strong> Run the setup file. If Windows flags an unrecognized publisher, verify the official CaveViewer download and inspect the warning before proceeding.</p>
+<p>Run the setup file. Windows may identify CaveViewer as an unrecognized app. Microsoft does not yet recognize its publisher. Confirm that the installer came from the official CaveViewer site before proceeding. Depending on your Windows version, select More info → Run anyway.</p>
+<div class="docs-install-card__actions">
+<p class="docs-install-card__help"><a href="https://learn.microsoft.com/en-us/windows/apps/package-and-deploy/smartscreen-reputation">More info →</a></p>
+<p class="docs-install-card__downloads"><a href="https://github.com/CaveViewer/CaveViewer/releases/download/v1.0.92/CaveViewer-1.0.92-windows.exe" aria-label="Download CaveViewer for Windows"><span>Windows</span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v11m0 0 4-4m-4 4-4-4M5 17v3h14v-3"/></svg></a></p>
+</div>
 </section>
 <section class="docs-install-card" aria-labelledby="install-macos">
 <h3 id="install-macos">macOS</h3>
-<p><strong>Choose Apple silicon or Intel:</strong> Choose your Mac type, then drag CaveViewer into Applications.</p>
-<p>Check Apple menu → About This Mac. Look for “Chip” or “Processor.” Apple silicon is M1 or newer; otherwise choose Intel.</p>
+<p>Choose the download for Apple silicon or Intel, then drag CaveViewer into Applications. macOS may be unable to verify CaveViewer. Apple does not yet recognize its developer. After confirming the download source, go to System Settings → Privacy &amp; Security → Open Anyway. Do not override a warning that says the app will damage your computer.</p>
+<div class="docs-install-card__actions">
+<p class="docs-install-card__help"><a href="https://support.apple.com/guide/mac-help/open-a-mac-app-from-an-unknown-developer-mh40616/mac">More info →</a></p>
+<p class="docs-install-card__downloads"><a href="https://github.com/CaveViewer/CaveViewer/releases/download/v1.0.92/CaveViewer-1.0.92-macos-arm64.dmg" aria-label="Download CaveViewer for Apple silicon"><span>Apple</span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v11m0 0 4-4m-4 4-4-4M5 17v3h14v-3"/></svg></a><a href="https://github.com/CaveViewer/CaveViewer/releases/download/v1.0.92/CaveViewer-1.0.92-macos-x86_64.dmg" aria-label="Download CaveViewer for Intel Mac"><span>Intel</span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v11m0 0 4-4m-4 4-4-4M5 17v3h14v-3"/></svg></a></p>
+</div>
 </section>
 <section class="docs-install-card" aria-labelledby="install-linux">
 <h3 id="install-linux">Linux</h3>
-<p><strong>x86_64 AppImage:</strong> Allow the AppImage to run in your file manager, then open it.</p>
+<p>Allow the x86_64 AppImage to run, then open it. Linux does not display an equivalent publisher-verification warning.</p>
+<div class="docs-install-card__actions">
+<p class="docs-install-card__help" aria-hidden="true"></p>
+<p class="docs-install-card__downloads"><a href="https://github.com/CaveViewer/CaveViewer/releases/download/v1.0.92/CaveViewer-1.0.92-x86_64.AppImage" aria-label="Download CaveViewer for Linux"><span>Linux</span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v11m0 0 4-4m-4 4-4-4M5 17v3h14v-3"/></svg></a></p>
+</div>
 </section>
 </div>
+<!-- installation-guidance:end -->
 <h2 id="before-you-change-anything">Before You Tune</h2>
 <p>Open <strong>Preferences</strong> from the CaveViewer home screen.
 The settings covered here are divided between two tabs:</p>
@@ -602,7 +610,7 @@ effect without rebuilding the cache.</p>
         </div>
     </section>
 </main>
-<footer class="site-endcap"><div class="site-endcap__inner"><span class="site-endcap__copyright">&copy; 2026 CaveViewer</span><span class="site-endcap__partner">Bottomline Projects, Florida Chapter</span><img class="site-endcap__logo" src="assets/icons/caveviewer-cave-profile.svg" width="64" height="32" alt=""></div></footer>
-<script src="assets/js/app.js" defer></script>
+<footer class="site-endcap"><div class="site-endcap__inner"><span class="site-endcap__copyright">&copy; 2026 CaveViewer</span><a class="site-endcap__partner" href="https://www.bottomlineprojects.com/">Bottomline Projects, Florida Chapter</a><img class="site-endcap__logo" src="assets/icons/caveviewer-cave-profile.svg" width="64" height="32" alt=""></div></footer>
+<script src="assets/js/app.js?v=20260826" defer></script>
 </body>
 </html>

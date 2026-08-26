@@ -56,10 +56,13 @@ python3 -m http.server 4173 --bind 127.0.0.1
 
 Open <http://127.0.0.1:4173/>.
 
-## Maintain the release chooser
+## Maintain release and installation guidance
 
-`assets/data/release.json` is the maintained release source. After changing it,
-run:
+`assets/data/release.json` is the maintained source for release packages and
+platform installation guidance. `scripts/sync_release.py` renders both the Home
+download chooser and the installation cards in Docs. Keep the generated marker
+blocks in `index.html` and `docs.html`; do not edit their contents directly.
+After changing the manifest or generator, run:
 
 ```bash
 python3 scripts/sync_release.py

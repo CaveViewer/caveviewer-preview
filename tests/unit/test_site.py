@@ -5,6 +5,7 @@ import importlib.util
 import re
 import subprocess
 import sys
+from html import escape
 from html.parser import HTMLParser
 from pathlib import Path
 from urllib.parse import urlparse
@@ -143,6 +144,22 @@ def test_release_manifest_rejects_noncanonical_package_names(tmp_path: Path) -> 
         sync_release.load_release_data(manifest_path)
 
 
+@pytest.mark.parametrize("platform", ("windows", "macos"))
+def test_release_manifest_rejects_unofficial_guidance_urls(
+    tmp_path: Path, platform: str
+) -> None:
+    sync_release = _sync_release_module()
+    release = json.loads((SITE_ROOT / "assets/data/release.json").read_text())
+    release["platforms"][platform]["security"]["guidance_url"] = (
+        "https://example.invalid/security-help"
+    )
+    manifest_path = tmp_path / "release.json"
+    manifest_path.write_text(json.dumps(release), encoding="utf-8")
+
+    with pytest.raises(ValueError, match="official platform guidance URL"):
+        sync_release.load_release_data(manifest_path)
+
+
 def test_preview_contains_only_the_canonical_public_routes() -> None:
     expected_pages = {
         "about.html",
@@ -224,6 +241,11 @@ def test_lognova_design_assets_are_local() -> None:
     ).is_file()
     assert "Explore what" in index
     assert "data-platform-download" in index
+    assert "Designed for cave divers, explorers, cartographers" in index
+    assert "The app is completely free—no advertisements, no subscriptions" in index
+    assert "hero__support" not in index
+    assert "256 GB of free disk space" not in index
+    assert "hero__formats" not in index
     assert "See the whole cave" not in index
     assert "home-moment-grid" not in index
     assert "formats home-formats" not in index
@@ -234,6 +256,7 @@ def test_preview_release_manifest_generates_every_download_reference() -> None:
     generator = REPOSITORY_ROOT / "scripts/sync_release.py"
     index_path = SITE_ROOT / "index.html"
     index = index_path.read_text(encoding="utf-8")
+    docs = (SITE_ROOT / "docs.html").read_text(encoding="utf-8")
     script = (SITE_ROOT / "assets/js/platform-download.js").read_text(
         encoding="utf-8"
     )
@@ -269,9 +292,31 @@ def test_preview_release_manifest_generates_every_download_reference() -> None:
     assert '<!-- Generated from assets/data/release.json by ' in index
     assert f'href="{expected_urls["windows"]}" data-primary-download' in index
     assert all(url in index for url in expected_urls.values())
-    assert index.count("data-platform-install-note=") == 3
+    assert "data-platform-install-note=" not in index
     for platform in (platforms["windows"], platforms["macos"], platforms["linux"]):
-        assert platform["install_note"] in index
+        assert platform["install_note"] in docs
+
+    assert all(url in docs for url in expected_urls.values())
+    assert "Download CaveViewer for your desktop platform" not in docs
+    assert docs.count('<div class="docs-install-card__actions">') == 3
+    assert docs.count('class="docs-install-card__help"') == 3
+    assert docs.count('class="docs-install-card__downloads"') == 3
+    for label in (
+        "Download CaveViewer for Windows",
+        "Download CaveViewer for Apple silicon",
+        "Download CaveViewer for Intel Mac",
+        "Download CaveViewer for Linux",
+    ):
+        assert f'aria-label="{label}"' in docs
+
+    assert "<!-- installation-guidance:start -->" in docs
+    assert "<!-- installation-guidance:end -->" in docs
+    assert "Generated from assets/data/release.json" in docs
+    for platform_name in ("windows", "macos"):
+        security = platforms[platform_name]["security"]
+        assert security["explanation"] in docs
+        assert escape(security["action"]) in docs
+        assert f'href="{security["guidance_url"]}"' in docs
 
     noscript = index[index.index("<noscript>") : index.index("</noscript>")]
     assert all(url in noscript for url in expected_urls.values())
@@ -415,6 +460,10 @@ def test_preview_uses_one_header_and_has_no_member_profile_routes() -> None:
         assert text.count('class="site-home"') == 1
         assert 'href="index.html" aria-label="CaveViewer home"><img' in text
         assert '<nav class="primary-nav" aria-label="Primary navigation">' in text
+        nav_start = text.index(
+            '<nav class="primary-nav" aria-label="Primary navigation">'
+        )
+        nav = text[nav_start : text.index("</nav>", nav_start)]
         assert 'href="features.html"' not in text
         assert 'href="advantage.html">Why CaveViewer</a>' in text or (
             'href="advantage.html" aria-current="page">Why CaveViewer</a>' in text
@@ -427,14 +476,10 @@ def test_preview_uses_one_header_and_has_no_member_profile_routes() -> None:
             "system-requirements",
             "installation",
             "before-you-change-anything",
-            "quick-recommendations",
-            "import-settings",
-            "streaming-settings",
-            "recommended-tuning-profiles",
             "troubleshooting-by-symptom",
-            "restore-the-defaults",
         ):
-            assert f'href="docs.html#{section}"' in text
+            assert f'href="docs.html#{section}"' in nav
+        assert nav.count('href="docs.html#') == 4
         assert 'assets/css/navigation-dropdown.css' in text
         assert 'href="media.html">Projects</a>' in text or (
             'href="media.html" aria-current="page">Projects</a>' in text
@@ -492,14 +537,18 @@ def test_preview_uses_one_header_and_has_no_member_profile_routes() -> None:
     assert docs.index('id="quick-recommendations"') < docs.index('id="import-settings"') < docs.index('id="streaming-settings"')
     assert docs.index('id="import-settings"') < docs.index("preferences-import-800.webp") < docs.index('id="streaming-settings"')
     assert docs.index('id="streaming-settings"') < docs.index("preferences-streaming-800.webp")
-    assert "Run the setup file. If Windows flags an unrecognized publisher" in docs
-    assert "Choose your Mac type, then drag CaveViewer into Applications." in docs
-    assert "Allow the AppImage to run in your file manager, then open it." in docs
+    assert "Microsoft does not yet recognize its publisher" in docs
+    assert "Apple does not yet recognize its developer" in docs
+    assert "Linux does not display an equivalent publisher-verification warning" in docs
 
     dropdown_styles = (SITE_ROOT / "assets/css/navigation-dropdown.css").read_text(encoding="utf-8")
     assert ".primary-nav__dropdown-menu" in dropdown_styles
     assert "border-radius: 0;" in dropdown_styles
     assert "box-shadow: none;" in dropdown_styles
+
+    global_styles = (SITE_ROOT / "assets/css/global.css").read_text(encoding="utf-8")
+    assert "max-height: calc(100dvh - var(--header-h) - 8px);" in global_styles
+    assert "overflow-y: auto;" in global_styles
 
     contact = (SITE_ROOT / "contact.html").read_text(encoding="utf-8")
     assert 'href="contact.html" aria-current="page">Contact</a>' in contact
@@ -508,7 +557,7 @@ def test_preview_uses_one_header_and_has_no_member_profile_routes() -> None:
     assert 'href="sponsors.html" aria-current="page">Sponsors</a>' in sponsors
     assert '<section class="sponsors-page" aria-labelledby="sponsors-page-title">' in sponsors
     assert '<div class="sponsors-page__grid">' in sponsors
-    assert sponsors.count('<a class="sponsor-card ') == 2
+    assert sponsors.count('<a class="sponsor-card ') == 5
     for sponsor, href, image, width, height in (
         (
             "KISS Rebreathers",
@@ -560,13 +609,20 @@ def test_sponsors_grid_uses_local_logo_fallbacks_and_accepts_future_cards() -> N
     assert 'assets/css/sponsors.css' in sponsors
     assert sponsors.count("<picture>") == 2
     assert sponsors.count('type="image/webp"') == 2
-    assert sponsors.count('decoding="async"') == 2
+    assert sponsors.count('<a class="sponsor-card ') == 5
+    assert sponsors.count('decoding="async"') == 5
     assert 'loading="eager" fetchpriority="high"' in sponsors
     assert (SITE_ROOT / "assets/images/sponsors/kiss-rebreathers-logo.png").is_file()
     assert (SITE_ROOT / "assets/images/sponsors/kiss-rebreathers-logo.webp").is_file()
     assert (SITE_ROOT / "assets/images/sponsors/xdeep-logo.png").is_file()
     assert (SITE_ROOT / "assets/images/sponsors/xdeep-logo.webp").is_file()
-    assert "grid-template-columns: repeat(auto-fit, minmax(min(100%, 260px), 1fr));" in styles
+    for logo in (
+        "seal-drysuits-logo.svg",
+        "agisoft-logo.svg",
+        "synergy-geomatics-logo.png",
+    ):
+        assert (SITE_ROOT / "assets/images/sponsors" / logo).is_file()
+    assert "grid-template-columns: repeat(auto-fit, minmax(min(100%, 340px), 1fr));" in styles
     assert ".sponsor-card:focus-visible {\n    outline: 2px solid" in styles
     assert "@media (max-width: 620px)" in styles
 

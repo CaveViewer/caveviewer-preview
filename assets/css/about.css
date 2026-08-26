@@ -1,17 +1,4 @@
 .page-about main { overflow: hidden; }
-.page-about .section-kicker {
-    display: flex;
-    align-items: center;
-    gap: 13px;
-    margin: 0 0 20px;
-    color: #8ca5ae;
-    text-transform: uppercase;
-    letter-spacing: .18em;
-    font-size: 10px;
-    font-weight: 700;
-}
-.page-about .section-kicker span { color: var(--cyan); }
-
 /* Team — intentionally first on the page ------------------------------- */
 .about-team {
     position: relative;
@@ -182,6 +169,65 @@
     font-weight: 600;
 }
 
+/* Acknowledgements — supporting contributors, distinct from core team. */
+.about-thanks {
+    display: grid;
+    grid-template-columns: minmax(280px, .78fr) minmax(0, 1.22fr);
+    gap: clamp(40px, 7vw, 104px);
+    margin-top: clamp(72px, 8vw, 112px);
+    padding-top: clamp(40px, 5vw, 64px);
+}
+
+.about-thanks__intro h2 {
+    margin: 0;
+    color: var(--title);
+    font-family: var(--display);
+    font-size: clamp(38px, 4.2vw, 60px);
+    font-weight: var(--display-weight);
+    line-height: .96;
+    letter-spacing: -.055em;
+}
+
+.about-thanks__intro > p:last-child {
+    max-width: 32rem;
+    margin: 22px 0 0;
+    color: #aebdc2;
+    font-size: clamp(16px, 1.25vw, 19px);
+    line-height: 1.65;
+}
+
+.about-thanks__grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    align-content: center;
+    column-gap: clamp(28px, 4vw, 56px);
+    padding: 0;
+    margin: 0;
+    list-style: none;
+}
+
+.about-thanks__grid li {
+    display: grid;
+    grid-template-columns: 24px minmax(0, 1fr);
+    min-height: 52px;
+    align-items: center;
+    padding: 8px 0;
+    color: #e4ecee;
+    font-family: var(--display);
+    font-size: clamp(17px, 1.5vw, 22px);
+    font-weight: 450;
+    line-height: 1.15;
+    letter-spacing: -.02em;
+    white-space: nowrap;
+}
+
+.about-thanks__grid li::before {
+    content: "•";
+    color: var(--accent);
+    font-size: 18px;
+    line-height: 1;
+}
+
 
 /* Desktop team responsiveness: preserve heading, fit portrait + caption. */
 @media (min-width: 1181px) {
@@ -209,6 +255,8 @@
         max-width: 160px;
         padding-left: 16px;
     }
+    .about-thanks { grid-template-columns: 1fr; }
+    .about-thanks__grid { grid-template-columns: 1fr; }
 }
 
 @media (max-width: 620px) {
@@ -242,6 +290,11 @@
         letter-spacing: .065em;
         line-height: 1.45;
     }
+    .about-thanks {
+        margin-top: 56px;
+        padding-top: 36px;
+    }
+    .about-thanks__grid li { min-height: 58px; }
 }
 
 @media (max-width: 380px) {

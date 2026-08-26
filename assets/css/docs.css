@@ -71,12 +71,59 @@
     margin: 22px 0 28px;
 }
 .docs-install-card {
+    display: flex;
+    flex-direction: column;
     padding: 20px;
     border: 1px solid rgba(242, 217, 140, .14);
     background: rgba(18, 18, 26, .58);
 }
 .docs-install-card h3 { margin-top: 0; }
 .docs-install-card p:last-child { margin-bottom: 0; }
+.docs-install-card__actions {
+    display: grid;
+    gap: 16px;
+    margin-top: auto;
+    padding-top: 12px;
+}
+.docs-install-card__help {
+    min-height: 31px;
+}
+.docs-install-card__actions .docs-install-card__help {
+    margin-bottom: 0;
+}
+.docs-install-card__downloads {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+.docs-article .docs-install-card__downloads a {
+    display: inline-flex;
+    min-height: 38px;
+    align-items: center;
+    gap: 7px;
+    padding: 7px 12px;
+    border: 1px solid rgba(242, 217, 140, .34);
+    color: var(--title);
+    font-size: 14px;
+    font-weight: 700;
+    line-height: 1.2;
+    text-decoration: none;
+}
+.docs-install-card__downloads svg {
+    width: 17px;
+    height: 17px;
+    flex: 0 0 auto;
+    fill: none;
+    stroke: currentColor;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    stroke-width: 2;
+}
+.docs-article .docs-install-card__downloads a:hover,
+.docs-article .docs-install-card__downloads a:focus-visible {
+    border-color: var(--accent);
+    color: var(--accent);
+}
 .docs-figure {
     margin: 22px 0 28px;
 }
