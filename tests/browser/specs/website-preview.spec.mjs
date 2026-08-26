@@ -2,7 +2,6 @@ import { expect, test } from "@playwright/test";
 
 const canonicalPages = [
     { name: "Home", path: "index.html", content: "Explore what" },
-    { name: "Features compatibility route", path: "features.html", content: "View Ginormous Maps" },
     { name: "Why CaveViewer", path: "advantage.html", content: "View Ginormous Maps" },
     { name: "Docs", path: "docs.html", content: "System Requirements and Compatibility" },
     { name: "Projects", path: "media.html", content: "Wes Skiles Peacock Springs", waitUntil: "domcontentloaded" },
@@ -279,7 +278,7 @@ test("the shared header switches cleanly between inline and compact navigation",
     const menuToggle = page.locator("[data-menu-toggle]");
 
     await page.setViewportSize({ width: 1100, height: 900 });
-    await page.goto("features.html", { waitUntil: "networkidle" });
+    await page.goto("advantage.html", { waitUntil: "networkidle" });
     await expect(navigation).toHaveCSS("position", "static");
     await expect(menuToggle).toHaveCSS("display", "none");
     await expectNoHorizontalOverflow(page);
@@ -294,11 +293,6 @@ test("the shared header switches cleanly between inline and compact navigation",
 
 test("the Why CaveViewer link reaches practical, readable map guidance", async ({ page }) => {
     await page.setViewportSize({ width: 1440, height: 900 });
-    await page.goto("features.html", { waitUntil: "networkidle" });
-    await expect(page).toHaveURL(/advantage\.html$/);
-    await expect(page.getByRole("heading", { name: "Record & Share Dives" })).toBeVisible();
-    await expect(page.locator("#advantage")).toHaveCount(1);
-
     await page.goto("index.html", { waitUntil: "networkidle" });
 
     const navigation = page.getByRole("navigation", { name: "Primary navigation" });
@@ -440,11 +434,6 @@ test("essential labels, metadata, and prose retain readable minimums at mobile a
     ));
     await expectNoHorizontalOverflow(page);
 
-    await page.goto("features.html", { waitUntil: "networkidle" });
-    await expectFontSizeAtLeast(page.locator(
-        ".feature-section__copy p",
-    ), 14);
-
     await page.goto("advantage.html", { waitUntil: "networkidle" });
     await expectFontSizeAtLeast(page.locator(
         ".feature-section--advantage .feature-section__copy p",
@@ -569,7 +558,7 @@ test("modern browsers choose responsive images with reserved layout geometry", a
     );
     expect(heroBackground).toContain("ginnie1.webp");
 
-    await page.goto("features.html", { waitUntil: "networkidle" });
+    await page.goto("advantage.html", { waitUntil: "networkidle" });
     const renderingImage = page.locator("#rendering picture img");
     await expect(renderingImage).toHaveAttribute("width", "2558");
     await expect(renderingImage).toHaveAttribute("height", "1556");

@@ -28,7 +28,7 @@ jobs:
       - name: Prepare static Pages artifact
         run: |
           mkdir -p _site
-          cp about.html advantage.html contact.html docs.html features.html index.html media.html sponsors.html _site/
+          cp about.html advantage.html contact.html docs.html index.html media.html sponsors.html _site/
           cp -R assets storage _site/
 
       - name: Upload GitHub Pages artifact

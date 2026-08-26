@@ -63,7 +63,7 @@ def test_pages_workflow_deploys_only_the_static_site_artifact() -> None:
     )
 
     assert "path: _site" in workflow
-    assert "cp about.html advantage.html contact.html docs.html features.html index.html media.html sponsors.html _site/" in workflow
+    assert "cp about.html advantage.html contact.html docs.html index.html media.html sponsors.html _site/" in workflow
     assert "cp -R assets storage _site/" in workflow
     assert "github.ref == 'refs/heads/main'" in workflow
     assert not (SITE_ROOT / "CNAME").exists()
@@ -166,7 +166,6 @@ def test_preview_contains_only_the_canonical_public_routes() -> None:
         "advantage.html",
         "contact.html",
         "docs.html",
-        "features.html",
         "index.html",
         "media.html",
         "sponsors.html",
@@ -174,6 +173,29 @@ def test_preview_contains_only_the_canonical_public_routes() -> None:
 
     actual_pages = {path.name for path in _html_pages()}
     assert actual_pages == expected_pages
+
+
+def test_canonical_metadata_uses_navigation_names_without_visible_preview_copy() -> None:
+    expected_titles = {
+        "index.html": "CaveViewer — Explore What Lies Beneath",
+        "advantage.html": "Why CaveViewer",
+        "docs.html": "Docs — CaveViewer",
+        "about.html": "Team — CaveViewer",
+        "media.html": "Projects — CaveViewer",
+        "sponsors.html": "Sponsors — CaveViewer",
+        "contact.html": "Contact — CaveViewer",
+    }
+
+    assert set(expected_titles) == {path.name for path in _html_pages()}
+    assert len(set(expected_titles.values())) == len(expected_titles)
+    for page_name, title in expected_titles.items():
+        page = (SITE_ROOT / page_name).read_text(encoding="utf-8")
+        assert f"<title>{title}</title>" in page
+        assert "Site Preview" not in page
+        assert '<meta name="description" content="' in page
+        assert '<meta name="robots" content="noindex">' in page
+
+    assert not (SITE_ROOT / "features.html").exists()
 
 
 def test_removed_marketing_sections_have_no_routes_links_or_assets() -> None:
@@ -400,7 +422,6 @@ def test_reduced_motion_settles_all_pages_and_team_cards_stay_presentational() -
 def test_pages_expose_skip_paths_headings_and_noncolor_navigation_cues() -> None:
     styles = (SITE_ROOT / "assets/css/global.css").read_text(encoding="utf-8")
     expected_headings = {
-        "features.html": "<h1>Features have moved</h1>",
         "advantage.html": '<h1 class="sr-only">Why CaveViewer</h1>',
         "about.html": '<h1 class="sr-only">CaveViewer team</h1>',
         "docs.html": '<h1 class="sr-only" id="docs-title">CaveViewer Documentation</h1>',
@@ -451,7 +472,7 @@ def test_shared_styles_have_one_current_header_and_endcap_contract() -> None:
 
 
 def test_preview_uses_one_header_and_has_no_member_profile_routes() -> None:
-    pages = [page for page in _html_pages() if page.name != "features.html"]
+    pages = _html_pages()
 
     assert pages
     assert not list(SITE_ROOT.glob("member-*.html"))
@@ -581,12 +602,6 @@ def test_preview_uses_one_header_and_has_no_member_profile_routes() -> None:
         assert f'assets/images/sponsors/{image}.png' in sponsors
         assert f'width="{width}" height="{height}"' in sponsors
 
-
-    features = (SITE_ROOT / "features.html").read_text(encoding="utf-8")
-    assert '<meta http-equiv="refresh" content="0; url=advantage.html">' in features
-    assert 'window.location.replace("advantage.html" + window.location.hash)' in features
-    assert '<a href="advantage.html">Why CaveViewer</a>' in features
-
     advantage = (SITE_ROOT / "advantage.html").read_text(encoding="utf-8")
     assert 'href="advantage.html" aria-current="page">Why CaveViewer</a>' in advantage
     assert ">View Ginormous Maps<" in advantage
@@ -637,16 +652,12 @@ def test_sponsors_grid_uses_local_logo_fallbacks_and_accepts_future_cards() -> N
 
 
 def test_advantage_section_uses_the_real_preferences_and_capabilities() -> None:
-    features = (SITE_ROOT / "features.html").read_text(encoding="utf-8")
     advantage = (SITE_ROOT / "advantage.html").read_text(encoding="utf-8")
     styles = (SITE_ROOT / "assets/css/features.css").read_text(encoding="utf-8")
 
     assert '<section class="advantages-page" id="advantage"' in advantage
     assert '<a href="advantage.html" aria-current="page">Why CaveViewer</a>' in advantage
     assert advantage.count("feature-section--advantage") == 5
-    assert features.count('<section class="feature-section"') == 0
-    assert "advantages-page" not in features
-    assert "feature-section--advantage" not in features
     for text in (
         "View Ginormous Maps",
         "consumer-grade hardware",
