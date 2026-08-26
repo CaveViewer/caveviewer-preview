@@ -15,7 +15,7 @@ contact backend or database.
 
 GitHub Pages deploys only a prepared `_site/` artifact when `main` changes or
 when the workflow is manually run from `main`. This path is an exported static
-artifact: it contains the seven HTML pages plus `assets/` and `storage/`, not
+artifact: it contains the eight HTML pages plus `assets/` and `storage/`, not
 the repository's tests, scripts, or Git metadata. The site has no custom
 domain; its public URL is <https://caveviewer.github.io/caveviewer-preview/>.
 
@@ -93,8 +93,8 @@ supplies intrinsic dimensions to reserve layout space before images load.
 | Route | Preferred modern candidates | Budget |
 | --- | --- | ---: |
 | Home | `ginnie1.webp`, `software-hero-cave-strokes-full.webp` | 1.30 MB |
-| Features | Rendering, Map Library, and Capture WebP images | 0.40 MB |
-| Why CaveViewer | Import and Streaming preference WebP images | 0.12 MB |
-| Team | Five responsive portrait WebP images | 0.80 MB |
+| Why CaveViewer | Rendering, Map Library, Capture, and Streaming WebP images | 0.45 MB |
+| Documentation | Import and Streaming preference WebP images | 0.12 MB |
+| Team | Six responsive portrait WebP images | 0.80 MB |
 | Sponsors | KISS Rebreathers and XDEEP logo WebP images | 0.05 MB |
 | Projects | No local image assets; two privacy-enhanced YouTube embeds | — |

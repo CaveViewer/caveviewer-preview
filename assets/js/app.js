@@ -23,7 +23,24 @@
     const menuToggle = document.querySelector('[data-menu-toggle]');
 
     if (navigation && menuToggle) {
-        const firstNavigationLink = navigation.querySelector('a');
+        const dropdowns = [...navigation.querySelectorAll('.primary-nav__dropdown')];
+        const firstNavigationControl = navigation.querySelector('summary, a');
+        const closeDropdowns = exception => {
+            dropdowns.forEach(dropdown => {
+                if (dropdown !== exception) {
+                    dropdown.removeAttribute('open');
+                }
+            });
+        };
+
+        dropdowns.forEach(dropdown => {
+            dropdown.addEventListener('toggle', () => {
+                if (dropdown.open) {
+                    closeDropdowns(dropdown);
+                }
+            });
+        });
+
         const setMenuOpen = (isOpen, { restoreFocus = false } = {}) => {
             const wasOpen = navigation.classList.contains('is-open');
 
@@ -39,7 +56,7 @@
                 window.requestAnimationFrame(() => {
                     window.requestAnimationFrame(() => {
                         if (navigation.classList.contains('is-open')) {
-                            firstNavigationLink?.focus();
+                            firstNavigationControl?.focus();
                         }
                     });
                 });
@@ -55,17 +72,27 @@
 
         navigation.addEventListener('click', event => {
             if (event.target.closest('a')) {
+                closeDropdowns();
                 setMenuOpen(false);
             }
         });
 
         document.addEventListener('keydown', event => {
-            if (event.key === 'Escape' && navigation.classList.contains('is-open')) {
-                setMenuOpen(false, { restoreFocus: true });
+            if (event.key === 'Escape') {
+                closeDropdowns();
+                if (navigation.classList.contains('is-open')) {
+                    setMenuOpen(false, { restoreFocus: true });
+                }
             }
         });
 
-        window.matchMedia('(min-width: 821px)').addEventListener('change', event => {
+        document.addEventListener('click', event => {
+            if (!event.target.closest('.primary-nav__dropdown')) {
+                closeDropdowns();
+            }
+        });
+
+        window.matchMedia('(min-width: 961px)').addEventListener('change', event => {
             if (event.matches) {
                 setMenuOpen(false);
             }

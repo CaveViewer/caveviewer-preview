@@ -2,8 +2,9 @@ import { expect, test } from "@playwright/test";
 
 const canonicalPages = [
     { name: "Home", path: "index.html", content: "Explore what" },
-    { name: "Features", path: "features.html", content: "View Ginormous Maps" },
-    { name: "Why CaveViewer", path: "advantage.html", content: "Flexible large map support" },
+    { name: "Features compatibility route", path: "features.html", content: "View Ginormous Maps" },
+    { name: "Why CaveViewer", path: "advantage.html", content: "View Ginormous Maps" },
+    { name: "Docs", path: "docs.html", content: "System Requirements and Compatibility" },
     { name: "Projects", path: "media.html", content: "Dives behind the data", waitUntil: "domcontentloaded" },
     { name: "Team", path: "about.html", content: "Magic Mr_V" },
     { name: "Sponsors", path: "sponsors.html", content: "KISS Rebreathers" },
@@ -69,7 +70,7 @@ test.describe("canonical website-preview routes", () => {
 });
 
 test("the skip link moves keyboard focus to main content", async ({ page }) => {
-    await page.goto("features.html", { waitUntil: "networkidle" });
+    await page.goto("advantage.html", { waitUntil: "networkidle" });
 
     const skipLink = page.getByRole("link", { name: "Skip to main content" });
     const main = page.locator("#main-content");
@@ -82,11 +83,11 @@ test("the skip link moves keyboard focus to main content", async ({ page }) => {
 
 test("navigation current and focus states have non-color indicators", async ({ page }) => {
     await page.setViewportSize({ width: 1440, height: 900 });
-    await page.goto("features.html", { waitUntil: "networkidle" });
+    await page.goto("advantage.html", { waitUntil: "networkidle" });
 
     const navigation = page.getByRole("navigation", { name: "Primary navigation" });
-    const currentLink = navigation.getByRole("link", { name: "Features" });
-    const focusedLink = navigation.getByRole("link", { name: "Why CaveViewer" });
+    const currentLink = navigation.getByRole("link", { name: "Why CaveViewer" });
+    const focusedControl = navigation.getByText("Docs", { exact: true });
 
     await page.keyboard.press("Tab");
     await page.keyboard.press("Tab");
@@ -95,13 +96,13 @@ test("navigation current and focus states have non-color indicators", async ({ p
     await expect(currentLink).toHaveCSS("text-decoration-line", "underline");
 
     await page.keyboard.press("Tab");
-    await expect(focusedLink).toBeFocused();
-    await expect(focusedLink).toHaveCSS("outline-style", "solid");
+    await expect(focusedControl).toBeFocused();
+    await expect(focusedControl).toHaveCSS("outline-style", "solid");
 });
 
 test("the mobile navigation is keyboard-operable", async ({ page }) => {
     await page.setViewportSize({ width: 390, height: 844 });
-    await page.goto("features.html", { waitUntil: "networkidle" });
+    await page.goto("index.html", { waitUntil: "networkidle" });
 
     const menuToggle = page.locator("[data-menu-toggle]");
     const navigation = page.getByRole("navigation", { name: "Primary navigation" });
@@ -112,14 +113,34 @@ test("the mobile navigation is keyboard-operable", async ({ page }) => {
     await expect(menuToggle).toHaveAttribute("aria-expanded", "true");
     await expect(menuToggle).toHaveAttribute("aria-label", "Close navigation");
     await expect(navigation).toHaveClass(/is-open/);
-    await expect(navigation.getByRole("link", { name: "Features" })).toBeFocused();
+    await expect(navigation.getByRole("link", { name: "Why CaveViewer" })).toBeFocused();
 
     await page.keyboard.press("Tab");
-    await expect(navigation.getByRole("link", { name: "Why CaveViewer" })).toBeFocused();
+    await expect(navigation.getByText("Docs", { exact: true })).toBeFocused();
+    await page.keyboard.press("Enter");
+    await expect(navigation.locator(".primary-nav__dropdown").first()).toHaveAttribute("open", "");
+    for (const label of [
+        "System Requirements",
+        "Installation",
+        "Before You Tune",
+        "Quick Recommendations",
+        "Import Tuning",
+        "Streaming Tuning",
+        "Tuning Profiles",
+        "Troubleshooting",
+        "Restore Default Settings",
+    ]) {
+        await page.keyboard.press("Tab");
+        await expect(navigation.getByRole("link", { name: label, exact: true })).toBeFocused();
+    }
     await page.keyboard.press("Tab");
-    await expect(navigation.getByRole("link", { name: "Projects" })).toBeFocused();
+    await expect(navigation.getByText("Team & Partners", { exact: true })).toBeFocused();
+    await page.keyboard.press("Enter");
+    await expect(navigation.locator(".primary-nav__dropdown").nth(1)).toHaveAttribute("open", "");
     await page.keyboard.press("Tab");
     await expect(navigation.getByRole("link", { name: "Team" })).toBeFocused();
+    await page.keyboard.press("Tab");
+    await expect(navigation.getByRole("link", { name: "Projects" })).toBeFocused();
     await page.keyboard.press("Tab");
     await expect(navigation.getByRole("link", { name: "Sponsors" })).toBeFocused();
     await page.keyboard.press("Tab");
@@ -141,6 +162,7 @@ test("Sponsors uses responsive cards with official-site links", async ({ page })
     const kiss = cards.filter({ has: page.getByRole("heading", { name: "KISS Rebreathers" }) });
     const xdeep = cards.filter({ has: page.getByRole("heading", { name: "XDEEP" }) });
 
+    await navigation.getByText("Team & Partners", { exact: true }).click();
     await expect(navigation.getByRole("link", { name: "Sponsors" })).toHaveAttribute(
         "aria-current",
         "page",
@@ -190,13 +212,13 @@ test("the shared header switches cleanly between inline and compact navigation",
     const navigation = page.getByRole("navigation", { name: "Primary navigation" });
     const menuToggle = page.locator("[data-menu-toggle]");
 
-    await page.setViewportSize({ width: 900, height: 900 });
+    await page.setViewportSize({ width: 1100, height: 900 });
     await page.goto("features.html", { waitUntil: "networkidle" });
     await expect(navigation).toHaveCSS("position", "static");
     await expect(menuToggle).toHaveCSS("display", "none");
     await expectNoHorizontalOverflow(page);
 
-    await page.setViewportSize({ width: 820, height: 900 });
+    await page.setViewportSize({ width: 900, height: 900 });
     await expect(navigation).toHaveCSS("position", "fixed");
     await expect(menuToggle).toHaveCSS("display", "grid");
     await menuToggle.click();
@@ -207,32 +229,31 @@ test("the shared header switches cleanly between inline and compact navigation",
 test("the Why CaveViewer link reaches practical, readable map guidance", async ({ page }) => {
     await page.setViewportSize({ width: 1440, height: 900 });
     await page.goto("features.html", { waitUntil: "networkidle" });
+    await expect(page).toHaveURL(/advantage\.html$/);
     await expect(page.getByRole("heading", { name: "Record & Share Dives" })).toBeVisible();
-    await expect(page.locator("#advantage")).toHaveCount(0);
+    await expect(page.locator("#advantage")).toHaveCount(1);
 
     await page.goto("index.html", { waitUntil: "networkidle" });
 
-    await page.getByRole("navigation", { name: "Primary navigation" })
-        .getByRole("link", { name: "Why CaveViewer" })
-        .click();
+    const navigation = page.getByRole("navigation", { name: "Primary navigation" });
+    await navigation.getByRole("link", { name: "Why CaveViewer" }).click();
     await expect(page).toHaveURL(/advantage\.html$/);
 
     const advantage = page.locator("#advantage");
     await expect(advantage).toBeInViewport();
-    await expect(advantage.getByRole("heading", { name: "Flexible large map support" }))
+    await expect(advantage.getByRole("heading", { name: "View Ginormous Maps" }))
         .toBeVisible();
-    await expect(advantage).toContainText("Import chunk size");
-    await expect(advantage.getByRole("img", { name: "CaveViewer Preferences with the Import tab selected, showing cache and worker settings" }))
+    await expect(advantage).toContainText("consumer-grade hardware");
+    await expect(advantage.getByRole("img", { name: "CaveViewer rendering a textured cave passage with a minimap and viewer controls" }))
         .toBeVisible();
     const streaming = page.locator("#advantage-streaming");
     await streaming.scrollIntoViewIfNeeded();
-    await expect(streaming).toContainText("System RAM target");
-    await expect(streaming).toContainText("Loading CPUs to keep free");
+    await expect(streaming).toContainText("system and graphics-memory budgets");
     await expect(streaming.getByRole("img", { name: "CaveViewer Preferences with the Streaming tab selected, showing memory, loading, and upload settings" }))
         .toBeVisible();
     const freedom = page.locator("#advantage-freedom");
     await freedom.scrollIntoViewIfNeeded();
-    await expect(freedom.getByRole("heading", { name: "Free software and maps" })).toBeVisible();
+    await expect(freedom.getByRole("heading", { name: "Free Software, No Strings Attached" })).toBeVisible();
     await expect(freedom.getByRole("link", { name: "GNU Affero General Public License v3.0 (AGPLv3)" }))
         .toHaveAttribute("href", "https://www.gnu.org/licenses/agpl-3.0.en.html");
     await expectNoHorizontalOverflow(page);
@@ -252,6 +273,7 @@ test("Projects presents the two original expedition videos in the Feature layout
     const navigation = page.getByRole("navigation", { name: "Primary navigation" });
     const videos = page.locator(".feature-section__visual--video iframe");
 
+    await navigation.getByText("Team & Partners", { exact: true }).click();
     await expect(navigation.getByRole("link", { name: "Projects" })).toHaveAttribute(
         "aria-current",
         "page",
@@ -446,7 +468,7 @@ test("Team cards remain static presentational articles on hover", async ({ page 
     expect(beforeHover.transition).toBe("all");
 });
 
-test("Magic Mr_V has a picture-free Team card that stays aligned with the grid", async ({ page }) => {
+test("Magic Mr_V has a responsive cave-diving Team portrait", async ({ page }) => {
     await page.setViewportSize({ width: 1440, height: 900 });
     await page.goto("about.html", { waitUntil: "networkidle" });
 
@@ -455,34 +477,15 @@ test("Magic Mr_V has a picture-free Team card that stays aligned with the grid",
     });
 
     await expect(card).toHaveCount(1);
-    await expect(card).toHaveClass(/about-person--text-only/);
-    await expect(card.locator("img, picture, .about-person__media")).toHaveCount(0);
-
-    const layout = await page.evaluate(() => {
-        const magicCard = document.querySelector(".about-person--text-only");
-        const referenceCard = [...document.querySelectorAll(".about-person")].find(
-            card => card.querySelector("h2")?.textContent === "Brian Deatherage",
-        );
-
-        if (!magicCard || !referenceCard) {
-            throw new Error("Expected Team cards were not found");
-        }
-
-        const magicBounds = magicCard.getBoundingClientRect();
-        const referenceBounds = referenceCard.getBoundingClientRect();
-        const magicCaptionBounds = magicCard.querySelector(".about-person__caption").getBoundingClientRect();
-        const referenceCaptionBounds = referenceCard.querySelector(".about-person__caption").getBoundingClientRect();
-
-        return {
-            magicCaptionBottom: magicCaptionBounds.bottom,
-            magicHeight: magicBounds.height,
-            referenceCaptionBottom: referenceCaptionBounds.bottom,
-            referenceHeight: referenceBounds.height,
-        };
-    });
-
-    expect(layout.magicHeight).toBeCloseTo(layout.referenceHeight, 1);
-    expect(layout.magicCaptionBottom).toBeCloseTo(layout.referenceCaptionBottom, 1);
+    await expect(card).not.toHaveClass(/about-person--text-only/);
+    const portrait = card.getByRole("img", { name: "Magic Mr_V" });
+    await expect(portrait).toBeVisible();
+    await expect(portrait).toHaveAttribute("width", "1536");
+    await expect(portrait).toHaveAttribute("height", "1169");
+    expect(await portrait.evaluate(image => image.currentSrc)).toMatch(
+        /magic-mr-v-cave-diver-(640|960)\.webp$/,
+    );
+    await expectNoHorizontalOverflow(page);
 });
 
 test("modern browsers choose responsive images with reserved layout geometry", async ({ page }) => {
@@ -633,7 +636,7 @@ test("disabling JavaScript leaves every reveal target visible", async ({ browser
         for (const route of canonicalPages) {
             await page.goto(route.path, { waitUntil: route.waitUntil ?? "networkidle" });
             const revealTargetsAreVisible = await page.locator("[data-reveal]").evaluateAll(
-                targets => targets.length > 0 && targets.every(target => {
+                targets => targets.every(target => {
                     const style = getComputedStyle(target);
                     const bounds = target.getBoundingClientRect();
 

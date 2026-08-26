@@ -8,6 +8,7 @@
     <meta name="description" content="The CaveViewer team.">
     <meta name="robots" content="noindex">
     <link rel="stylesheet" href="assets/css/global.css">
+    <link rel="stylesheet" href="assets/css/navigation-dropdown.css">
     <link rel="stylesheet" href="assets/css/readability.css">
             <link rel="stylesheet" href="assets/css/page.css">
                 <link rel="stylesheet" href="assets/css/about.css">
@@ -19,11 +20,29 @@
     <div class="site-header__inner">
         <a class="site-home" href="index.html" aria-label="CaveViewer home"><img class="site-home__mark" src="assets/icons/caveviewer-cave-profile.svg" width="64" height="32" alt=""></a>
         <nav class="primary-nav" aria-label="Primary navigation">
-            <a href="features.html">Features</a>
             <a href="advantage.html">Why CaveViewer</a>
-            <a href="media.html">Projects</a>
-            <a href="about.html" aria-current="page">Team</a>
-            <a href="sponsors.html">Sponsors</a>
+            <details class="primary-nav__dropdown">
+                <summary>Docs</summary>
+                <div class="primary-nav__dropdown-menu">
+                    <a href="docs.html#system-requirements">System Requirements</a>
+                    <a href="docs.html#installation">Installation</a>
+                    <a href="docs.html#before-you-change-anything">Before You Tune</a>
+                    <a href="docs.html#quick-recommendations">Quick Recommendations</a>
+                    <a href="docs.html#import-settings">Import Tuning</a>
+                    <a href="docs.html#streaming-settings">Streaming Tuning</a>
+                    <a href="docs.html#recommended-tuning-profiles">Tuning Profiles</a>
+                    <a href="docs.html#troubleshooting-by-symptom">Troubleshooting</a>
+                    <a href="docs.html#restore-the-defaults">Restore Default Settings</a>
+                </div>
+            </details>
+            <details class="primary-nav__dropdown">
+                <summary aria-current="page">Team &amp; Partners</summary>
+                <div class="primary-nav__dropdown-menu">
+                    <a href="about.html" aria-current="page">Team</a>
+                    <a href="media.html">Projects</a>
+                    <a href="sponsors.html">Sponsors</a>
+                </div>
+            </details>
             <a href="contact.html">Contact</a>
         </nav>
         <a class="header-download" href="index.html#get-caveviewer">Download</a>
@@ -65,7 +84,13 @@
                                                     </div>
                         <p class="about-person__role">Co-Creator</p>
                                                     <p class="about-person__affiliation">Bottomline Projects Scientific Dive Team</p>                    </div>
-                </article>                                            <article class="about-person about-person--text-only" data-reveal>
+</article>                                            <article class="about-person" data-reveal>
+                    <div class="about-person__media">
+                        <picture>
+                            <source type="image/webp" srcset="storage/uploads/2026/08/magic-mr-v-cave-diver-640.webp 640w, storage/uploads/2026/08/magic-mr-v-cave-diver-960.webp 960w" sizes="(max-width: 900px) 50vw, 476px">
+                            <img src="storage/uploads/2026/08/magic-mr-v-cave-diver.jpg" width="1536" height="1169" loading="lazy" decoding="async" alt="Magic Mr_V" style="--photo-position: 62% 50%;">
+                        </picture>
+                    </div>
                     <div class="about-person__caption">
                         <div class="about-person__name-row">
                             <h2>Magic Mr_V</h2>

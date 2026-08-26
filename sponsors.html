@@ -8,6 +8,7 @@
     <meta name="description" content="Sponsors of CaveViewer.">
     <meta name="robots" content="noindex">
     <link rel="stylesheet" href="assets/css/global.css">
+    <link rel="stylesheet" href="assets/css/navigation-dropdown.css">
     <link rel="stylesheet" href="assets/css/readability.css">
     <link rel="stylesheet" href="assets/css/sponsors.css">
     <link rel="stylesheet" href="assets/css/app-theme.css">
@@ -18,11 +19,29 @@
     <div class="site-header__inner">
         <a class="site-home" href="index.html" aria-label="CaveViewer home"><img class="site-home__mark" src="assets/icons/caveviewer-cave-profile.svg" width="64" height="32" alt=""></a>
         <nav class="primary-nav" aria-label="Primary navigation">
-            <a href="features.html">Features</a>
             <a href="advantage.html">Why CaveViewer</a>
-            <a href="media.html">Projects</a>
-            <a href="about.html">Team</a>
-            <a href="sponsors.html" aria-current="page">Sponsors</a>
+            <details class="primary-nav__dropdown">
+                <summary>Docs</summary>
+                <div class="primary-nav__dropdown-menu">
+                    <a href="docs.html#system-requirements">System Requirements</a>
+                    <a href="docs.html#installation">Installation</a>
+                    <a href="docs.html#before-you-change-anything">Before You Tune</a>
+                    <a href="docs.html#quick-recommendations">Quick Recommendations</a>
+                    <a href="docs.html#import-settings">Import Tuning</a>
+                    <a href="docs.html#streaming-settings">Streaming Tuning</a>
+                    <a href="docs.html#recommended-tuning-profiles">Tuning Profiles</a>
+                    <a href="docs.html#troubleshooting-by-symptom">Troubleshooting</a>
+                    <a href="docs.html#restore-the-defaults">Restore Default Settings</a>
+                </div>
+            </details>
+            <details class="primary-nav__dropdown">
+                <summary aria-current="page">Team &amp; Partners</summary>
+                <div class="primary-nav__dropdown-menu">
+                    <a href="about.html">Team</a>
+                    <a href="media.html">Projects</a>
+                    <a href="sponsors.html" aria-current="page">Sponsors</a>
+                </div>
+            </details>
             <a href="contact.html">Contact</a>
         </nav>
         <a class="header-download" href="index.html#get-caveviewer">Download</a>

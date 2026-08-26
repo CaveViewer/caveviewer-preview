@@ -62,7 +62,7 @@ def test_pages_workflow_deploys_only_the_static_site_artifact() -> None:
     )
 
     assert "path: _site" in workflow
-    assert "cp about.html advantage.html contact.html features.html index.html media.html sponsors.html _site/" in workflow
+    assert "cp about.html advantage.html contact.html docs.html features.html index.html media.html sponsors.html _site/" in workflow
     assert "cp -R assets storage _site/" in workflow
     assert "github.ref == 'refs/heads/main'" in workflow
     assert not (SITE_ROOT / "CNAME").exists()
@@ -148,6 +148,7 @@ def test_preview_contains_only_the_canonical_public_routes() -> None:
         "about.html",
         "advantage.html",
         "contact.html",
+        "docs.html",
         "features.html",
         "index.html",
         "media.html",
@@ -182,7 +183,6 @@ def test_removed_marketing_sections_have_no_routes_links_or_assets() -> None:
         text = page.read_text(encoding="utf-8")
         for section in REMOVED_MARKETING_SECTIONS:
             assert f"{section}.html" not in text
-            assert f">{section.title()}<" not in text
 
 
 def test_published_site_contains_only_static_file_types() -> None:
@@ -294,11 +294,15 @@ def test_preview_release_manifest_generates_every_download_reference() -> None:
 def test_reveal_content_is_visible_without_javascript() -> None:
     styles = (SITE_ROOT / "assets/css/global.css").read_text(encoding="utf-8")
     script = (SITE_ROOT / "assets/js/app.js").read_text(encoding="utf-8")
+    pages_with_reveals = []
 
     for page in _html_pages():
         page_text = page.read_text(encoding="utf-8")
         assert 'assets/css/global.css' in page_text
-        assert "data-reveal" in page_text
+        if "data-reveal" in page_text:
+            pages_with_reveals.append(page.name)
+
+    assert pages_with_reveals
 
     assert re.search(
         r"html\.reveal-enhanced \[data-reveal\] \{\s*opacity:\s*0;", styles
@@ -349,9 +353,10 @@ def test_reduced_motion_settles_all_pages_and_team_cards_stay_presentational() -
 def test_pages_expose_skip_paths_headings_and_noncolor_navigation_cues() -> None:
     styles = (SITE_ROOT / "assets/css/global.css").read_text(encoding="utf-8")
     expected_headings = {
-        "features.html": '<h1 class="sr-only">CaveViewer features</h1>',
+        "features.html": "<h1>Features have moved</h1>",
         "advantage.html": '<h1 class="sr-only">Why CaveViewer</h1>',
         "about.html": '<h1 class="sr-only">CaveViewer team</h1>',
+        "docs.html": '<h1 class="sr-only" id="docs-title">CaveViewer Documentation</h1>',
         "media.html": '<h1 id="media-page-title" class="media-page__title">Dives behind the data</h1>',
         "sponsors.html": '<h1 id="sponsors-page-title" class="sr-only">Sponsors</h1>',
     }
@@ -399,7 +404,7 @@ def test_shared_styles_have_one_current_header_and_endcap_contract() -> None:
 
 
 def test_preview_uses_one_header_and_has_no_member_profile_routes() -> None:
-    pages = _html_pages()
+    pages = [page for page in _html_pages() if page.name != "features.html"]
 
     assert pages
     assert not list(SITE_ROOT.glob("member-*.html"))
@@ -410,20 +415,36 @@ def test_preview_uses_one_header_and_has_no_member_profile_routes() -> None:
         assert text.count('class="site-home"') == 1
         assert 'href="index.html" aria-label="CaveViewer home"><img' in text
         assert '<nav class="primary-nav" aria-label="Primary navigation">' in text
-        assert 'href="features.html">Features</a>' in text or (
-            'href="features.html" aria-current="page">Features</a>' in text
-        )
+        assert 'href="features.html"' not in text
         assert 'href="advantage.html">Why CaveViewer</a>' in text or (
             'href="advantage.html" aria-current="page">Why CaveViewer</a>' in text
         )
+        assert text.count('<details class="primary-nav__dropdown">') == 2
+        assert ">Docs</summary>" in text
+        assert ">Team &amp; Partners</summary>" in text
+        assert "primary-nav__subdropdown" not in text
+        for section in (
+            "system-requirements",
+            "installation",
+            "before-you-change-anything",
+            "quick-recommendations",
+            "import-settings",
+            "streaming-settings",
+            "recommended-tuning-profiles",
+            "troubleshooting-by-symptom",
+            "restore-the-defaults",
+        ):
+            assert f'href="docs.html#{section}"' in text
+        assert 'assets/css/navigation-dropdown.css' in text
         assert 'href="media.html">Projects</a>' in text or (
             'href="media.html" aria-current="page">Projects</a>' in text
         )
         assert (
-            text.index(">Features</a>")
-            < text.index(">Why CaveViewer</a>")
-            < text.index(">Projects</a>")
+            text.index(">Why CaveViewer</a>")
+            < text.index(">Docs</summary>")
+            < text.index(">Team &amp; Partners</summary>")
             < text.index(">Team</a>")
+            < text.index(">Projects</a>")
         )
         assert 'href="about.html">Team</a>' in text or (
             'href="about.html" aria-current="page">Team</a>' in text
@@ -451,6 +472,35 @@ def test_preview_uses_one_header_and_has_no_member_profile_routes() -> None:
     assert ">Chief Technology Wizard<" not in about
     assert "K3rnalPanic" not in about
 
+    docs = (SITE_ROOT / "docs.html").read_text(encoding="utf-8")
+    assert '<summary aria-current="page">Docs</summary>' in docs
+    assert '<article class="docs-article">' in docs
+    assert "docs-toc" not in docs
+    assert "System Requirements and Compatibility" in docs
+    assert ">System RAM target<" in docs
+    assert ">Import chunk size<" in docs
+    assert "Rebuild cache" in docs
+    assert docs.count('<figure class="docs-figure">') == 2
+    assert "preferences-import-800.webp" in docs
+    assert "preferences-import-1600.webp" in docs
+    assert "preferences-streaming-800.webp" in docs
+    assert "preferences-streaming-1600.webp" in docs
+    assert docs.count("<h2 ") == 9
+    assert docs.index('id="system-requirements"') < docs.index('id="installation"')
+    assert docs.index('id="installation"') < docs.index('id="before-you-change-anything"')
+    assert docs.index('id="before-you-change-anything"') < docs.index('id="quick-recommendations"')
+    assert docs.index('id="quick-recommendations"') < docs.index('id="import-settings"') < docs.index('id="streaming-settings"')
+    assert docs.index('id="import-settings"') < docs.index("preferences-import-800.webp") < docs.index('id="streaming-settings"')
+    assert docs.index('id="streaming-settings"') < docs.index("preferences-streaming-800.webp")
+    assert "Run the setup file. If Windows flags an unrecognized publisher" in docs
+    assert "Choose your Mac type, then drag CaveViewer into Applications." in docs
+    assert "Allow the AppImage to run in your file manager, then open it." in docs
+
+    dropdown_styles = (SITE_ROOT / "assets/css/navigation-dropdown.css").read_text(encoding="utf-8")
+    assert ".primary-nav__dropdown-menu" in dropdown_styles
+    assert "border-radius: 0;" in dropdown_styles
+    assert "box-shadow: none;" in dropdown_styles
+
     contact = (SITE_ROOT / "contact.html").read_text(encoding="utf-8")
     assert 'href="contact.html" aria-current="page">Contact</a>' in contact
 
@@ -477,19 +527,13 @@ def test_preview_uses_one_header_and_has_no_member_profile_routes() -> None:
 
 
     features = (SITE_ROOT / "features.html").read_text(encoding="utf-8")
-    assert 'href="features.html" aria-current="page">Features</a>' in features
-    for feature in (
-        "View Ginormous Maps",
-        "Enjoy Free Maps",
-        "Record &amp; Share Dives",
-    ):
-        assert f">{feature}<" in features
-    assert "advantages-page" not in features
-    assert "Keep more cave within reach." not in features
+    assert '<meta http-equiv="refresh" content="0; url=advantage.html">' in features
+    assert 'window.location.replace("advantage.html" + window.location.hash)' in features
+    assert '<a href="advantage.html">Why CaveViewer</a>' in features
 
     advantage = (SITE_ROOT / "advantage.html").read_text(encoding="utf-8")
     assert 'href="advantage.html" aria-current="page">Why CaveViewer</a>' in advantage
-    assert ">Flexible large map support<" in advantage
+    assert ">View Ginormous Maps<" in advantage
 
     media = (SITE_ROOT / "media.html").read_text(encoding="utf-8")
     assert 'href="media.html" aria-current="page">Projects</a>' in media
@@ -534,28 +578,24 @@ def test_advantage_section_uses_the_real_preferences_and_capabilities() -> None:
 
     assert '<section class="advantages-page" id="advantage"' in advantage
     assert '<a href="advantage.html" aria-current="page">Why CaveViewer</a>' in advantage
-    assert advantage.count("feature-section--advantage") == 3
-    assert features.count('<section class="feature-section"') == 3
+    assert advantage.count("feature-section--advantage") == 5
+    assert features.count('<section class="feature-section"') == 0
     assert "advantages-page" not in features
     assert "feature-section--advantage" not in features
     for text in (
-        "render exceptionally large and complicated cave maps",
-        "available system and graphics memory",
-        "selects a smaller size before upload",
-        "fine surface detail may look softer",
-        "Import chunk size",
-        "Max upload group size",
-        "Cache-building worker limit",
-        "System RAM target",
-        "GPU memory target",
-        "Loading worker limit",
-        "portable precompiled map",
-        "Free software and maps",
-        "CaveViewer and its maps are free.",
+        "View Ginormous Maps",
+        "consumer-grade hardware",
+        "Keep Moving as Maps Load",
+        "Enjoy Free Maps",
+        "Record &amp; Share Dives",
+        "Free Software, No Strings Attached",
+        "CaveViewer and its standard maps are free.",
         "no accounts, subscriptions, ads, or trackers.",
         "GNU Affero General Public License v3.0 (AGPLv3)",
         "https://www.gnu.org/licenses/agpl-3.0.en.html",
-        "preferences-import-1600.webp",
+        "rendering-engine-1600.webp",
+        "map-library-1600.webp",
+        "capture-recording-1600.webp",
         "preferences-streaming-1600.webp",
     ):
         assert text in advantage
@@ -626,29 +666,24 @@ def test_about_team_captions_use_compact_spacing() -> None:
     assert ".about-person__affiliation {\n    margin: 5px 0 0;" in styles
 
 
-def test_about_team_photos_and_text_only_profile_use_the_intended_treatment() -> None:
+def test_about_team_photos_use_the_intended_treatment() -> None:
     about = (SITE_ROOT / "about.html").read_text(encoding="utf-8")
     styles = (SITE_ROOT / "assets/css/about.css").read_text(encoding="utf-8")
 
-    assert about.count("--photo-position:") == 5
+    assert about.count("--photo-position:") == 6
     assert 'alt="Brian Deatherage" style="--photo-position: 50% 0%;"' in about
     assert 'alt="Zsolt Szabo" style="--photo-position: 50% 40%;"' in about
     assert 'alt="Filipp R. Loginova" style="--photo-position: 50% 45%;"' in about
-    text_only_start = about.index('<article class="about-person about-person--text-only" data-reveal>')
-    text_only_end = about.index("</article>", text_only_start)
-    text_only_profile = about[text_only_start:text_only_end]
-
-    assert "Magic Mr_V" in text_only_profile
-    assert "Co-Creator / Chief Technology Wizard" in text_only_profile
-    assert "<picture>" not in text_only_profile
-    assert "<img" not in text_only_profile
+    assert 'alt="Magic Mr_V" style="--photo-position: 62% 50%;"' in about
+    assert "magic-mr-v-cave-diver-640.webp" in about
+    assert "magic-mr-v-cave-diver-960.webp" in about
+    assert "Co-Creator / Chief Technology Wizard" in about
     assert about.index("<h2>Zsolt Szabo</h2>") < about.index("<h2>Magic Mr_V</h2>") < about.index("<h2>Filipp R. Loginova</h2>")
     assert "about-person__media--blank" not in about
-    assert "magic-mr-v-cat-hacker" not in about
+    assert "about-person--text-only" not in about
     assert "object-position: var(--photo-position, 50% 20%);" in styles
     assert "about-person__media--blank" not in styles
-    assert ".about-person--text-only {\n    justify-content: flex-end;\n    min-height: clamp(190px, 22vw, 320px);" in styles
-    assert ".about-person--text-only .about-person__caption {\n    flex: 0 0 auto;\n    padding: 0;\n}" in styles
+    assert "about-person--text-only" not in styles
     assert "@media (min-width: 1181px) {\n    .about-person__media {\n        aspect-ratio: 4 / 3;" in styles
 
 
@@ -705,7 +740,6 @@ def test_preview_documents_its_public_static_boundary() -> None:
 
 def test_image_delivery_uses_responsive_webp_and_reserves_layout_space() -> None:
     index = (SITE_ROOT / "index.html").read_text(encoding="utf-8")
-    features = (SITE_ROOT / "features.html").read_text(encoding="utf-8")
     advantage = (SITE_ROOT / "advantage.html").read_text(encoding="utf-8")
     about = (SITE_ROOT / "about.html").read_text(encoding="utf-8")
     sponsors = (SITE_ROOT / "sponsors.html").read_text(encoding="utf-8")
@@ -726,15 +760,16 @@ def test_image_delivery_uses_responsive_webp_and_reserves_layout_space() -> None
                 "assets/images/software-hero-cave-strokes-full.webp",
             ),
         ),
-        "Features": (
-            400_000,
+        "Why CaveViewer": (
+            450_000,
             (
                 "assets/images/features/rendering-engine-1600.webp",
                 "assets/images/features/map-library-1600.webp",
                 "assets/images/features/capture-recording-1600.webp",
+                "assets/images/features/preferences-streaming-1600.webp",
             ),
         ),
-        "Why CaveViewer": (
+        "Documentation": (
             120_000,
             (
                 "assets/images/features/preferences-import-1600.webp",
@@ -747,6 +782,7 @@ def test_image_delivery_uses_responsive_webp_and_reserves_layout_space() -> None
                 "storage/uploads/2026/08/e02af4158100878810221f4cc8db33f52026e293-960.webp",
                 "storage/uploads/2026/08/46afd31b727aa673872050329b90d75db21bd831-960.webp",
                 "storage/uploads/2026/08/0dfffc22c2177fa30ec1e13d531c71b8eb71100d-850.webp",
+                "storage/uploads/2026/08/magic-mr-v-cave-diver-960.webp",
                 "storage/uploads/2026/08/32c8839d88fe923a90c84a1206c967245f98ef57-960.webp",
                 "storage/uploads/2026/08/4278cd57d55958ba1979cfc0ef999019c70455de-960.webp",
             ),
@@ -767,7 +803,7 @@ def test_image_delivery_uses_responsive_webp_and_reserves_layout_space() -> None
     assert "## Image delivery budget" in readme
     assert "picture`/`srcset`" in readme
     assert "`image-set`" in readme
-    assert "Five responsive portrait WebP images" in readme
+    assert "Six responsive portrait WebP images" in readme
     assert "KISS Rebreathers and XDEEP logo WebP images" in readme
     assert "two privacy-enhanced YouTube embeds" in readme
 
@@ -776,7 +812,7 @@ def test_image_delivery_uses_responsive_webp_and_reserves_layout_space() -> None
     assert "image-set(" in home_styles
     assert 'width="64" height="32"' in index
 
-    assert features.count("<picture>") == 3
+    assert advantage.count("<picture>") == 4
     for source in (
         "rendering-engine-800.webp",
         "rendering-engine-1600.webp",
@@ -784,25 +820,17 @@ def test_image_delivery_uses_responsive_webp_and_reserves_layout_space() -> None
         "map-library-1600.webp",
         "capture-recording-800.webp",
         "capture-recording-1600.webp",
-    ):
-        assert source in features
-    assert 'width="2558" height="1556" loading="eager" fetchpriority="high"' in features
-    assert features.count('loading="lazy" decoding="async"') == 2
-    assert ".feature-section__visual picture" in feature_styles
-
-    assert advantage.count("<picture>") == 2
-    for source in (
-        "preferences-import-800.webp",
-        "preferences-import-1600.webp",
         "preferences-streaming-800.webp",
         "preferences-streaming-1600.webp",
     ):
         assert source in advantage
-    assert advantage.count('loading="lazy" decoding="async"') == 2
+    assert 'width="2558" height="1556" loading="eager" fetchpriority="high"' in advantage
+    assert advantage.count('loading="lazy" decoding="async"') == 3
+    assert ".feature-section__visual picture" in feature_styles
 
-    assert about.count("<picture>") == 5
-    assert about.count('sizes="(max-width: 900px) 50vw, 476px"') == 5
-    assert about.count('loading="lazy" decoding="async"') == 3
+    assert about.count("<picture>") == 6
+    assert about.count('sizes="(max-width: 900px) 50vw, 476px"') == 6
+    assert about.count('loading="lazy" decoding="async"') == 4
     assert 'loading="eager" fetchpriority="high"' in about
     assert about.count(' width="') >= 6
     assert ".about-person__media picture" in about_styles

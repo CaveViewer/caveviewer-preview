@@ -8,6 +8,7 @@
     <meta name="description" content="Why CaveViewer is practical for importing, viewing, and sharing large cave maps.">
     <meta name="robots" content="noindex">
     <link rel="stylesheet" href="assets/css/global.css">
+    <link rel="stylesheet" href="assets/css/navigation-dropdown.css">
     <link rel="stylesheet" href="assets/css/readability.css">
     <link rel="stylesheet" href="assets/css/page.css">
     <link rel="stylesheet" href="assets/css/features.css">
@@ -19,11 +20,29 @@
     <div class="site-header__inner">
         <a class="site-home" href="index.html" aria-label="CaveViewer home"><img class="site-home__mark" src="assets/icons/caveviewer-cave-profile.svg" width="64" height="32" alt=""></a>
         <nav class="primary-nav" aria-label="Primary navigation">
-            <a href="features.html">Features</a>
             <a href="advantage.html" aria-current="page">Why CaveViewer</a>
-            <a href="media.html">Projects</a>
-            <a href="about.html">Team</a>
-            <a href="sponsors.html">Sponsors</a>
+            <details class="primary-nav__dropdown">
+                <summary>Docs</summary>
+                <div class="primary-nav__dropdown-menu">
+                    <a href="docs.html#system-requirements">System Requirements</a>
+                    <a href="docs.html#installation">Installation</a>
+                    <a href="docs.html#before-you-change-anything">Before You Tune</a>
+                    <a href="docs.html#quick-recommendations">Quick Recommendations</a>
+                    <a href="docs.html#import-settings">Import Tuning</a>
+                    <a href="docs.html#streaming-settings">Streaming Tuning</a>
+                    <a href="docs.html#recommended-tuning-profiles">Tuning Profiles</a>
+                    <a href="docs.html#troubleshooting-by-symptom">Troubleshooting</a>
+                    <a href="docs.html#restore-the-defaults">Restore Default Settings</a>
+                </div>
+            </details>
+            <details class="primary-nav__dropdown">
+                <summary>Team &amp; Partners</summary>
+                <div class="primary-nav__dropdown-menu">
+                    <a href="about.html">Team</a>
+                    <a href="media.html">Projects</a>
+                    <a href="sponsors.html">Sponsors</a>
+                </div>
+            </details>
             <a href="contact.html">Contact</a>
         </nav>
         <a class="header-download" href="index.html#get-caveviewer">Download</a>
@@ -39,28 +58,27 @@
         <div class="advantages-page__grid" aria-hidden="true"></div>
         <div class="shell">
             <div class="advantages-page__sections">
-                <section class="feature-section feature-section--advantage" aria-labelledby="advantage-title" data-reveal>
+                <section class="feature-section feature-section--advantage" id="rendering" aria-labelledby="advantage-title" data-reveal>
                     <div class="feature-section__copy">
-                        <h2 id="advantage-title">Flexible large map support</h2>
-                        <p>CaveViewer can render exceptionally large and complicated cave maps by splitting them into smaller pieces and then stacking the segments together like lego blocks. This lets consumer-grade hardware load maps that might otherwise exceed its available memory.</p>
-                        <p>CaveViewer sets working memory budgets from available system and graphics memory. If textures exceed the graphics budget, it selects a smaller size before upload; fine surface detail may look softer.</p>
-                        <p>You can tune import performance by adjusting <strong>Import chunk size</strong> and <strong>Max upload group size</strong> preferences. Adjust <strong>Cache-building worker limit</strong> to speed up or slow down map imports depending on your hardware.</p>
-                        <p>Changes to import settings take effect when a cache is built. Set them before importing a map, or rebuild an existing cache to use new values.</p>
+                        <h2 id="advantage-title">View Ginormous Maps</h2>
+                        <p>Large cave maps can take a long time to open and become difficult to move through. That can force you to wait, work with a smaller copy, or lose context when checking a long route.</p>
+                        <p>CaveViewer splits exceptionally large and complicated cave maps into smaller pieces, then brings nearby segments together as you explore. This lets consumer-grade hardware open maps that might otherwise exceed its available memory.</p>
+                        <p>You can inspect a cave at its original scale, follow passages and restrictions without first cutting the map down, and return more quickly after the first import.</p>
+                        <p>For hardware guidance and detailed performance controls, see the <a href="docs.html#system-requirements">system requirements</a> and <a href="docs.html#before-you-change-anything">tuning guide</a>.</p>
                     </div>
                     <figure class="feature-section__visual">
                         <picture>
-                            <source type="image/webp" srcset="assets/images/features/preferences-import-800.webp 800w, assets/images/features/preferences-import-1600.webp 1600w" sizes="(max-width: 840px) calc(100vw - 64px), 680px">
-                            <img src="assets/images/features/preferences-import.png" width="1982" height="1656" loading="lazy" decoding="async" alt="CaveViewer Preferences with the Import tab selected, showing cache and worker settings">
+                            <source type="image/webp" srcset="assets/images/features/rendering-engine-800.webp 800w, assets/images/features/rendering-engine-1600.webp 1600w" sizes="(max-width: 840px) calc(100vw - 64px), 680px">
+                            <img src="assets/images/features/rendering-engine.png" width="2558" height="1556" loading="eager" fetchpriority="high" decoding="async" alt="CaveViewer rendering a textured cave passage with a minimap and viewer controls">
                         </picture>
                     </figure>
                 </section>
 
                 <section class="feature-section feature-section--advantage" id="advantage-streaming" aria-labelledby="advantage-streaming-title" data-reveal>
                     <div class="feature-section__copy">
-                        <h2 id="advantage-streaming-title">Smooth rendering</h2>
-                        <p>As you view a map, the app loads only the map parts required to provide the best viewing experience. You can adjust streaming performance in the Preferences section.</p>
-                        <p>You can tune memory use with <strong>System RAM target</strong> and <strong>GPU memory target</strong>, which set how much map data stays resident. <strong>Loading worker limit</strong> and <strong>Loading CPUs to keep free</strong> control background work and reserve processor capacity for other apps.</p>
-                        <p>You can save a restriction, landmark, or passage as a portable precompiled map with its geometry and textures. See <strong>Help</strong> section in the app for more information.</p>
+                        <h2 id="advantage-streaming-title">Keep Moving as Maps Load</h2>
+                        <p>CaveViewer loads and unloads nearby map sections as you move instead of placing the entire cave in memory at once. This keeps long routes practical while preserving the context around passages, restrictions, and landmarks.</p>
+                        <p>Automatic system and graphics-memory budgets provide a useful starting point on a wide range of computers. When a particular map or machine needs adjustment, the <a href="docs.html#import-settings">Import Tuning</a> and <a href="docs.html#streaming-settings">Streaming Tuning</a> guides explain each control.</p>
                     </div>
                     <figure class="feature-section__visual">
                         <picture>
@@ -70,10 +88,41 @@
                     </figure>
                 </section>
 
+                <section class="feature-section feature-section--advantage" id="map-library" aria-labelledby="map-library-title" data-reveal>
+                    <div class="feature-section__copy">
+                        <h2 id="map-library-title">Enjoy Free Maps</h2>
+                        <p>Without a cave map of your own, it is difficult to judge whether a map viewer will work for you. Searching for data, downloading a large collection, and wondering whether a file will open can make a first visit frustrating.</p>
+                        <p>Map Library gives you free maps to download and open right away. Use them to get familiar with CaveViewer, check that it works on your computer, or simply explore an unfamiliar cave.</p>
+                        <p>Choose only the maps you want. Downloaded maps remain available when your internet connection is limited, so you do not have to download them again.</p>
+                    </div>
+                    <figure class="feature-section__visual">
+                        <picture>
+                            <source type="image/webp" srcset="assets/images/features/map-library-800.webp 800w, assets/images/features/map-library-1600.webp 1600w" sizes="(max-width: 840px) calc(100vw - 64px), 680px">
+                            <img src="assets/images/features/map-library.png" width="1980" height="1654" loading="lazy" decoding="async" alt="CaveViewer Map Library showing available standard cave maps">
+                        </picture>
+                    </figure>
+                </section>
+
+                <section class="feature-section feature-section--advantage" id="capture" aria-labelledby="capture-title" data-reveal>
+                    <div class="feature-section__copy">
+                        <h2 id="capture-title">Record &amp; Share Dives</h2>
+                        <p>After you close a map, it is easy to lose the details of a route through a cave. A written description rarely shows every turn, landmark, or restriction along the way.</p>
+                        <p>Capture saves a video of your route and a record of the path you took. You can review them later, share them with someone else, or let another person follow the same route.</p>
+                        <p>The video and route stay in local files, ready to use with the tools you already have. You can also mark two points to save a portable part of a cave when you need only one passage, landmark, or area to discuss.</p>
+                    </div>
+                    <figure class="feature-section__visual">
+                        <picture>
+                            <source type="image/webp" srcset="assets/images/features/capture-recording-800.webp 800w, assets/images/features/capture-recording-1600.webp 1600w" sizes="(max-width: 840px) calc(100vw - 64px), 680px">
+                            <img src="assets/images/features/capture-recording.png" width="2558" height="1556" loading="lazy" decoding="async" alt="CaveViewer confirming that a cave-dive recording was saved">
+                        </picture>
+                    </figure>
+                </section>
+
                 <section class="feature-section feature-section--advantage feature-section--freedom" id="advantage-freedom" aria-labelledby="advantage-freedom-title" data-reveal>
                     <div class="feature-section__copy">
-                        <h2 id="advantage-freedom-title">Free software and maps</h2>
-                        <p>CaveViewer and its maps are free. There are no accounts, subscriptions, ads, or trackers.</p>
+                        <h2 id="advantage-freedom-title">Free Software, No Strings Attached</h2>
+                        <p>CaveViewer and its standard maps are free. There are no accounts, subscriptions, ads, or trackers.</p>
+                        <p>Your imported maps, recordings, and shared routes remain local files under your control, and downloaded maps remain available when your internet connection is limited.</p>
                         <p>The software is released under the <a href="https://www.gnu.org/licenses/agpl-3.0.en.html">GNU Affero General Public License v3.0 (AGPLv3)</a>.</p>
                     </div>
                 </section>
