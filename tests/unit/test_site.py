@@ -664,7 +664,7 @@ def test_advantage_section_uses_the_real_preferences_and_capabilities() -> None:
         "Keep Moving as Maps Load",
         "Enjoy Free Maps",
         "Record &amp; Share Dives",
-        "Free Software, No Strings Attached",
+        "Pay Nothing",
         "CaveViewer and its standard maps are free.",
         "no accounts, subscriptions, ads, or trackers.",
         "GNU Affero General Public License v3.0 (AGPLv3)",

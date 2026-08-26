@@ -313,7 +313,7 @@ test("the Why CaveViewer link reaches practical, readable map guidance", async (
         .toBeVisible();
     const freedom = page.locator("#advantage-freedom");
     await freedom.scrollIntoViewIfNeeded();
-    await expect(freedom.getByRole("heading", { name: "Free Software, No Strings Attached" })).toBeVisible();
+    await expect(freedom.getByRole("heading", { name: "Pay Nothing" })).toBeVisible();
     await expect(freedom.getByRole("link", { name: "GNU Affero General Public License v3.0 (AGPLv3)" }))
         .toHaveAttribute("href", "https://www.gnu.org/licenses/agpl-3.0.en.html");
     await expectNoHorizontalOverflow(page);

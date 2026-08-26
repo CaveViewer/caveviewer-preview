@@ -104,7 +104,7 @@
 }
 .platform-download {
     width: min(100%, 430px);
-    margin-top: clamp(20px, 3svh, 30px);
+    margin-top: 48px;
 }
 .platform-download__primary {
     min-height: 68px;
