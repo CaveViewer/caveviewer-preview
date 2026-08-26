@@ -402,7 +402,7 @@ def test_pages_expose_skip_paths_headings_and_noncolor_navigation_cues() -> None
         "advantage.html": '<h1 class="sr-only">Why CaveViewer</h1>',
         "about.html": '<h1 class="sr-only">CaveViewer team</h1>',
         "docs.html": '<h1 class="sr-only" id="docs-title">CaveViewer Documentation</h1>',
-        "media.html": '<h1 id="media-page-title" class="media-page__title">Dives behind the data</h1>',
+        "media.html": '<h1 id="media-page-title" class="sr-only">Projects</h1>',
         "sponsors.html": '<h1 id="sponsors-page-title" class="sr-only">Sponsors</h1>',
     }
 
@@ -587,6 +587,8 @@ def test_preview_uses_one_header_and_has_no_member_profile_routes() -> None:
     media = (SITE_ROOT / "media.html").read_text(encoding="utf-8")
     assert 'href="media.html" aria-current="page">Projects</a>' in media
     assert '<section class="media-page" aria-labelledby="media-page-title">' in media
+    assert "Dives behind the data" not in media
+    assert media.count('class="media-page__video-title"') == 2
     assert media.count('class="feature-section__visual feature-section__visual--video"') == 2
     for video_id, title in (
         (

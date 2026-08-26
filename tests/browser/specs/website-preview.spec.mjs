@@ -5,7 +5,7 @@ const canonicalPages = [
     { name: "Features compatibility route", path: "features.html", content: "View Ginormous Maps" },
     { name: "Why CaveViewer", path: "advantage.html", content: "View Ginormous Maps" },
     { name: "Docs", path: "docs.html", content: "System Requirements and Compatibility" },
-    { name: "Projects", path: "media.html", content: "Dives behind the data", waitUntil: "domcontentloaded" },
+    { name: "Projects", path: "media.html", content: "Wes Skiles Peacock Springs", waitUntil: "domcontentloaded" },
     { name: "Team", path: "about.html", content: "Magic Mr_V" },
     { name: "Sponsors", path: "sponsors.html", content: "KISS Rebreathers" },
     { name: "Contact", path: "contact.html", content: "Contact Us" },
@@ -299,7 +299,13 @@ test("Projects presents the two original expedition videos in the Feature layout
         "aria-current",
         "page",
     );
-    await expect(page.getByRole("heading", { name: "Dives behind the data", level: 1 })).toBeVisible();
+    const pageHeading = page.getByRole("heading", { name: "Projects", level: 1 });
+    await expect(pageHeading).toHaveClass(/sr-only/);
+    await expect(page.getByText("Dives behind the data", { exact: true })).toHaveCount(0);
+    await expect(page.getByRole("heading", {
+        name: "Wes Skiles Peacock Springs State Park — 3-D Mapping Initiative",
+        level: 2,
+    })).toBeVisible();
     await expect(videos).toHaveCount(2);
     await expect(videos.nth(0)).toHaveAttribute(
         "src",

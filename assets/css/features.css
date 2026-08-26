@@ -158,18 +158,8 @@
     border: 0;
 }
 
-.media-page__title {
-    margin: 0;
-    color: var(--title);
-    font-family: var(--display);
-    font-size: clamp(28px, 2.8vw, 42px);
-    font-weight: var(--display-weight);
-    letter-spacing: -.045em;
-    line-height: 1;
-}
-
 .media-page__video-title {
-    margin: 24px 0 0;
+    margin: 0;
     color: var(--text);
     font-family: var(--display);
     font-size: clamp(21px, 2vw, 30px);
