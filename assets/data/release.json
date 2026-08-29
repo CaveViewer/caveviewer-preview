@@ -2,14 +2,14 @@
   "schema_version": 1,
   "product": "CaveViewer",
   "repository": "https://github.com/CaveViewer/CaveViewer",
-  "channel": "Preview"
+  "channel": "Preview",
   "version": "1.0.94",
-  "build_date": "2026-08-29",
+  "release_date": "2026-08-29",
   "chooser": {
     "other_platforms_label": "Other platforms",
     "title": "Choose your platform",
     "unknown_primary_label": "Choose your desktop platform",
-    "dialog_note": "Built on {build_date}."
+    "dialog_note": "Build on {month} {day} {year}"
   },
   "platforms": {
     "windows": {
