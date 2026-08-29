@@ -348,7 +348,7 @@ def test_preview_release_manifest_generates_every_download_reference() -> None:
     assert all(url in noscript for url in expected_urls.values())
     assert release["channel"] in index
     assert release["version"] in index
-    assert "Build on August 27 2026" in index
+    assert "Build on August 29 2026" in index
     assert release["repository"] not in script
     assert release["version"] not in script
     assert all(

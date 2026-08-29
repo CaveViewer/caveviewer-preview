@@ -642,6 +642,14 @@ test("the generated release manifest preserves the Windows primary action and ma
 
     await page.locator("[data-platform-dialog-open]").click();
     await expect(dialog).toHaveAttribute("open", "");
+    const releaseDate = new Date(`${release.release_date}T00:00:00Z`).toLocaleDateString("en-US", {
+        month: "long",
+        day: "numeric",
+        year: "numeric",
+        timeZone: "UTC",
+    }).replace(",", "");
+    await expect(dialog.locator(".platform-download__dialog-note"))
+        .toHaveText(`Build on ${releaseDate}`);
     await expect(dialog.locator('[data-release-platform="windows"] b svg')).toHaveCount(1);
     await expect(dialog.locator('[data-release-platform="linux"] b svg')).toHaveCount(1);
     await expect(dialog.locator('[data-release-platform="windows"]'))
