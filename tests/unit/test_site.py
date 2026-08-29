@@ -125,7 +125,9 @@ def test_release_manifest_rejects_untrusted_release_coordinates(
     tmp_path: Path, field: str, value: str, error: str
 ) -> None:
     sync_release = _sync_release_module()
-    release = json.loads((SITE_ROOT / "assets/data/release.json").read_text())
+    release = json.loads(
+        (SITE_ROOT / "assets/data/release.json").read_text(encoding="utf-8")
+    )
     release[field] = value
     manifest_path = tmp_path / "release.json"
     manifest_path.write_text(json.dumps(release), encoding="utf-8")
@@ -136,12 +138,27 @@ def test_release_manifest_rejects_untrusted_release_coordinates(
 
 def test_release_manifest_rejects_noncanonical_package_names(tmp_path: Path) -> None:
     sync_release = _sync_release_module()
-    release = json.loads((SITE_ROOT / "assets/data/release.json").read_text())
+    release = json.loads(
+        (SITE_ROOT / "assets/data/release.json").read_text(encoding="utf-8")
+    )
     release["platforms"]["windows"]["artifact"] = "other-installer.exe"
     manifest_path = tmp_path / "release.json"
     manifest_path.write_text(json.dumps(release), encoding="utf-8")
 
     with pytest.raises(ValueError, match="official, version-matched"):
+        sync_release.load_release_data(manifest_path)
+
+
+def test_release_manifest_rejects_invalid_release_date(tmp_path: Path) -> None:
+    sync_release = _sync_release_module()
+    release = json.loads(
+        (SITE_ROOT / "assets/data/release.json").read_text(encoding="utf-8")
+    )
+    release["release_date"] = "2026-02-30"
+    manifest_path = tmp_path / "release.json"
+    manifest_path.write_text(json.dumps(release), encoding="utf-8")
+
+    with pytest.raises(ValueError, match="valid ISO date"):
         sync_release.load_release_data(manifest_path)
 
 

@@ -2,7 +2,7 @@
   "schema_version": 1,
   "product": "CaveViewer",
   "repository": "https://github.com/CaveViewer/CaveViewer",
-  "channel": "Preview",
+  "channel": "Preview"
   "version": "1.0.94",
   "build_date": "2026-08-29",
   "chooser": {
