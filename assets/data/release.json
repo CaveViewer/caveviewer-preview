@@ -4,11 +4,12 @@
   "repository": "https://github.com/CaveViewer/CaveViewer",
   "channel": "Preview",
   "version": "1.0.93",
+  "release_date": "2026-08-27",
   "chooser": {
     "other_platforms_label": "Other platforms",
     "title": "Choose your platform",
     "unknown_primary_label": "Choose your desktop platform",
-    "dialog_note": "Downloads start directly from the official {version} build."
+    "dialog_note": "Build on {month} {day} {year}"
   },
   "platforms": {
     "windows": {
