@@ -4,6 +4,7 @@
 from __future__ import annotations
 
 import argparse
+from datetime import date
 import html
 import json
 import re
@@ -67,6 +68,7 @@ def load_release_data(path: Path = RELEASE_DATA_PATH) -> dict[str, Any]:
     repository = _require_text(release, "repository", "release")
     channel = _require_text(release, "channel", "release")
     version = _require_text(release, "version", "release")
+    release_date = _require_text(release, "release_date", "release")
     if product != "CaveViewer":
         raise ValueError("release.product must be CaveViewer")
     if repository != OFFICIAL_RELEASE_REPOSITORY:
@@ -77,6 +79,10 @@ def load_release_data(path: Path = RELEASE_DATA_PATH) -> dict[str, Any]:
         raise ValueError("release.channel must be Preview or Stable")
     if not RELEASE_VERSION_PATTERN.fullmatch(version):
         raise ValueError("release.version must contain exactly three decimal components")
+    try:
+        date.fromisoformat(release_date)
+    except ValueError as error:
+        raise ValueError("release.release_date must be a valid ISO date") from error
 
     chooser = _require_mapping(release.get("chooser"), "release.chooser")
     for key in (
@@ -157,7 +163,12 @@ def render_release_picker(release: dict[str, Any]) -> str:
         "</", "<\\/"
     )
     channel_label = f"{release['product']} {release['channel']} {release['version']}"
-    dialog_note = chooser["dialog_note"].format(version=release["version"])
+    release_date = date.fromisoformat(release["release_date"])
+    dialog_note = chooser["dialog_note"].format(
+        year=release_date.year,
+        month=release_date.strftime("%B"),
+        day=release_date.day,
+    )
     download_glyph = (
         '<svg viewBox="0 0 24 24" width="20" height="20">'
         '<path d="M12 3v11m0 0 4-4m-4 4-4-4M5 17v3h14v-3" '
