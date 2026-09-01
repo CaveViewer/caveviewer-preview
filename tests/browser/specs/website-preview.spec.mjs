@@ -604,6 +604,101 @@ test("modern browsers choose responsive images with reserved layout geometry", a
     expect(renderingMetrics.visibility).toBe("visible");
     expect(renderingMetrics.ratio).toBeCloseTo(2558 / 1556, 2);
 
+    const mapLibraryImage = page.locator("#map-library picture img");
+    await mapLibraryImage.scrollIntoViewIfNeeded();
+    await expect(mapLibraryImage).toBeVisible();
+    await expect(mapLibraryImage).toHaveAttribute("width", "2420");
+    await expect(mapLibraryImage).toHaveAttribute("height", "1634");
+    await expect.poll(async () => mapLibraryImage.evaluate(image => image.naturalWidth))
+        .toBeGreaterThan(0);
+    expect(await mapLibraryImage.evaluate(image => image.currentSrc)).toMatch(
+        /map-library-(800|1600)\.webp$/,
+    );
+
+    await page.setViewportSize({ width: 390, height: 844 });
+    await page.goto("advantage.html", { waitUntil: "networkidle" });
+    const mobileMapLibraryImage = page.locator("#map-library picture img");
+    await mobileMapLibraryImage.scrollIntoViewIfNeeded();
+    await expect(mobileMapLibraryImage).toBeVisible();
+    await expect.poll(async () => mobileMapLibraryImage.evaluate(image => image.naturalWidth))
+        .toBeGreaterThan(0);
+    expect(await mobileMapLibraryImage.evaluate(image => image.currentSrc)).toMatch(
+        /map-library-800\.webp$/,
+    );
+    await expectNoHorizontalOverflow(page);
+
+    await page.goto("docs.html", { waitUntil: "networkidle" });
+    const importImage = page.getByRole("img", {
+        name: "CaveViewer Preferences with the Import tab selected, showing cache and worker settings",
+    });
+    await importImage.scrollIntoViewIfNeeded();
+    await expect(importImage).toBeVisible();
+    await expect(importImage).toHaveAttribute("width", "2420");
+    await expect(importImage).toHaveAttribute("height", "1634");
+    await expect.poll(async () => importImage.evaluate(image => image.naturalWidth))
+        .toBeGreaterThan(0);
+    expect(await importImage.evaluate(image => image.currentSrc)).toMatch(
+        /preferences-import-800\.webp$/,
+    );
+    await expectNoHorizontalOverflow(page);
+
+    const streamingImage = page.getByRole("img", {
+        name: "CaveViewer Preferences with the Streaming tab selected, showing memory, loading, and upload settings",
+    });
+    await streamingImage.scrollIntoViewIfNeeded();
+    await expect(streamingImage).toBeVisible();
+    await expect(streamingImage).toHaveAttribute("width", "2420");
+    await expect(streamingImage).toHaveAttribute("height", "1634");
+    await expect.poll(async () => streamingImage.evaluate(image => image.naturalWidth))
+        .toBeGreaterThan(0);
+    expect(await streamingImage.evaluate(image => image.currentSrc)).toMatch(
+        /preferences-streaming-800\.webp$/,
+    );
+    await expectNoHorizontalOverflow(page);
+
+    const restoreDefaults = page.getByRole("heading", {
+        name: "Restore Default Settings",
+        level: 2,
+    });
+    await restoreDefaults.scrollIntoViewIfNeeded();
+    await expect(page.locator(".docs-article")).toContainText(
+        "Don’t worry about messing up your preferences—you can always save, import, and restore them in the app. Note that platform-specific settings, such as directory paths, will not be restored.",
+    );
+    const backupImage = page.getByRole("img", {
+        name: "CaveViewer Preferences with the Backup tab selected, showing controls to save, load, and restore preferences",
+    });
+    await backupImage.scrollIntoViewIfNeeded();
+    await expect(backupImage).toBeVisible();
+    await expect(backupImage).toHaveAttribute("width", "2420");
+    await expect(backupImage).toHaveAttribute("height", "1634");
+    await expect.poll(async () => backupImage.evaluate(image => image.naturalWidth))
+        .toBeGreaterThan(0);
+    expect(await backupImage.evaluate(image => image.currentSrc)).toMatch(
+        /preferences-backup-800\.webp$/,
+    );
+    await expectNoHorizontalOverflow(page);
+
+    const gettingHelp = page.getByRole("heading", { name: "Getting Help", level: 3 });
+    await gettingHelp.scrollIntoViewIfNeeded();
+    await expect(page.locator(".docs-article")).toContainText(
+        "Copy any error message you find, then include it with a short description of the problem when you contact support.",
+    );
+    await expect(page.getByRole("link", { name: "contact support" }))
+        .toHaveAttribute("href", "contact.html");
+    const troubleshootingImage = page.getByRole("img", {
+        name: "CaveViewer Help with the Troubleshooting tab selected, showing the latest application log and last error controls",
+    });
+    await troubleshootingImage.scrollIntoViewIfNeeded();
+    await expect(troubleshootingImage).toBeVisible();
+    await expect(troubleshootingImage).toHaveAttribute("width", "2420");
+    await expect(troubleshootingImage).toHaveAttribute("height", "1634");
+    await expect.poll(async () => troubleshootingImage.evaluate(image => image.naturalWidth))
+        .toBeGreaterThan(0);
+    expect(await troubleshootingImage.evaluate(image => image.currentSrc)).toMatch(
+        /help-troubleshooting-800\.webp$/,
+    );
+    await expectNoHorizontalOverflow(page);
+
     await page.goto("about.html", { waitUntil: "networkidle" });
     const firstPortrait = page.locator(".about-person picture img").first();
     await expect(firstPortrait).toHaveAttribute("width", "1206");

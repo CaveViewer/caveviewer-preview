@@ -345,7 +345,7 @@ main [id] {
 
 .site-endcap__inner {
     display: grid;
-    grid-template-columns: auto minmax(0, 1fr) auto;
+    grid-template-columns: auto minmax(0, 1fr);
     align-items: center;
     width: min(calc(100% - 32px), var(--max));
     min-height: var(--site-endcap-h);
@@ -365,12 +365,6 @@ main [id] {
     min-width: 0;
     margin-left: auto;
     text-align: right;
-}
-
-.site-endcap__logo {
-    width: 28px;
-    height: 14px;
-    object-fit: contain;
 }
 
 /* Intermediate desktop keeps the primary navigation inline. */
