@@ -485,7 +485,7 @@ def test_preview_uses_one_header_and_has_no_member_profile_routes() -> None:
 
         assert text.count('class="site-home"') == 1
         assert 'href="index.html" aria-label="CaveViewer home"><img' in text
-        assert 'src="assets/icons/caveviewer-cave-exploration.svg" width="64" height="32"' in text
+        assert 'src="assets/icons/caveviewer-logo.svg" width="64" height="32"' in text
         assert '<nav class="primary-nav" aria-label="Primary navigation">' in text
         nav_start = text.index(
             '<nav class="primary-nav" aria-label="Primary navigation">'
@@ -920,8 +920,8 @@ def test_image_delivery_uses_responsive_webp_and_reserves_layout_space() -> None
     assert "ginnie1.webp" in home_styles
     assert "software-hero-cave-strokes-full.webp" in home_styles
     assert "image-set(" in home_styles
-    assert (SITE_ROOT / "assets/icons/caveviewer-cave-exploration.svg").is_file()
-    assert 'src="assets/icons/caveviewer-cave-exploration.svg" width="64" height="32"' in index
+    assert (SITE_ROOT / "assets/icons/caveviewer-logo.svg").is_file()
+    assert 'src="assets/icons/caveviewer-logo.svg" width="64" height="32"' in index
 
     assert advantage.count("<picture>") == 4
     for source in (
