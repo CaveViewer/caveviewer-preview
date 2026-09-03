@@ -5,6 +5,7 @@ import importlib.util
 import re
 import subprocess
 import sys
+from datetime import date
 from html import escape
 from html.parser import HTMLParser
 from pathlib import Path
@@ -348,7 +349,11 @@ def test_preview_release_manifest_generates_every_download_reference() -> None:
     assert all(url in noscript for url in expected_urls.values())
     assert release["channel"] in index
     assert release["version"] in index
-    assert "Build on August 29 2026" in index
+    release_date = date.fromisoformat(release["release_date"])
+    assert (
+        f"Build on {release_date.strftime('%B')} {release_date.day} "
+        f"{release_date.year}"
+    ) in index
     assert release["repository"] not in script
     assert release["version"] not in script
     assert all(
