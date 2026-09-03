@@ -17,7 +17,7 @@
 <a class="skip-link" href="#main-content">Skip to main content</a>
 <header class="site-header" data-site-header>
     <div class="site-header__inner">
-        <a class="site-home" href="index.html" aria-label="CaveViewer home"><img class="site-home__mark" src="assets/icons/caveviewer-cave-profile.svg" width="64" height="32" alt=""></a>
+        <a class="site-home" href="index.html" aria-label="CaveViewer home"><img class="site-home__mark" src="assets/icons/caveviewer-logo.svg" width="64" height="32" alt=""></a>
         <nav class="primary-nav" aria-label="Primary navigation">
             <a href="advantage.html">Why CaveViewer</a>
             <details class="primary-nav__dropdown">
@@ -204,7 +204,7 @@ each change. This makes it much easier to identify what helped.</p>
 <figure class="docs-figure">
 <picture>
 <source type="image/webp" srcset="assets/images/features/preferences-import-800.webp 800w, assets/images/features/preferences-import-1600.webp 1600w" sizes="(max-width: 960px) calc(100vw - 48px), 880px">
-<img src="assets/images/features/preferences-import.png" width="1982" height="1656" loading="lazy" decoding="async" alt="CaveViewer Preferences with the Import tab selected, showing cache and worker settings">
+<img src="assets/images/features/preferences-import.png" width="2420" height="1634" loading="lazy" decoding="async" alt="CaveViewer Preferences with the Import tab selected, showing cache and worker settings">
 </picture>
 <figcaption>The Import preferences control cache structure, upload grouping, and cache-building workload.</figcaption>
 </figure>
@@ -315,7 +315,7 @@ make the entire import slower.</p>
 <figure class="docs-figure">
 <picture>
 <source type="image/webp" srcset="assets/images/features/preferences-streaming-800.webp 800w, assets/images/features/preferences-streaming-1600.webp 1600w" sizes="(max-width: 960px) calc(100vw - 48px), 880px">
-<img src="assets/images/features/preferences-streaming.png" width="1982" height="1656" loading="lazy" decoding="async" alt="CaveViewer Preferences with the Streaming tab selected, showing memory, loading, and upload settings">
+<img src="assets/images/features/preferences-streaming.png" width="2420" height="1634" loading="lazy" decoding="async" alt="CaveViewer Preferences with the Streaming tab selected, showing memory, loading, and upload settings">
 </picture>
 <figcaption>The Streaming preferences control memory use, background loading, and per-frame uploads.</figcaption>
 </figure>
@@ -470,6 +470,17 @@ monitoring memory use and import responsiveness.</li>
 <p>Higher values can reduce waiting, but they can also produce
 frame-time spikes or overwhelm storage. The best configuration is the
 lowest setting that removes the bottleneck you can actually see.</p>
+<h2 id="restore-the-defaults">Restore Default Settings</h2>
+<p>Don’t worry about messing up your preferences—you can always save, import, and restore them in the app. Note that platform-specific settings, such as directory paths, will not be restored.</p>
+<figure class="docs-figure">
+<picture>
+<source type="image/webp" srcset="assets/images/features/preferences-backup-800.webp 800w, assets/images/features/preferences-backup-1600.webp 1600w" sizes="(max-width: 960px) calc(100vw - 48px), 880px">
+<img src="assets/images/features/preferences-backup.png" width="2420" height="1634" loading="lazy" decoding="async" alt="CaveViewer Preferences with the Backup tab selected, showing controls to save, load, and restore preferences">
+</picture>
+</figure>
+<p>After restoring Import defaults, rebuild a map only if you previously
+rebuilt it with different Import settings. Streaming defaults take
+effect without rebuilding the cache.</p>
 <h2 id="troubleshooting-by-symptom">Troubleshooting</h2>
 <h3 id="movement-stutters-as-new-areas-load">Movement Stutters as New
 Areas Load</h3>
@@ -521,93 +532,20 @@ Performs Poorly While Other Maps Are Smooth</h3>
 geometry density rather than the global streaming configuration. Try a
 different <strong>Import chunk size</strong> or a smaller <strong>Max
 upload group size</strong>, then rebuild only that map's cache.</p>
-<h2 id="restore-the-defaults">Restore Default Settings</h2>
-<p>If tuning makes performance worse, restore these values:</p>
-<table class="docs-mobile-table--defaults">
-<thead>
-<tr class="header">
-<th>Streaming</th>
-<th style="text-align: right;">Default</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td>System RAM target</td>
-<td style="text-align: right;">8%</td>
-</tr>
-<tr class="even">
-<td>GPU memory target</td>
-<td style="text-align: right;">70%</td>
-</tr>
-<tr class="odd">
-<td>GPU memory override</td>
-<td style="text-align: right;">Blank / automatic</td>
-</tr>
-<tr class="even">
-<td>Loading worker limit</td>
-<td style="text-align: right;">2</td>
-</tr>
-<tr class="odd">
-<td>Loading CPUs to keep free</td>
-<td style="text-align: right;">3</td>
-</tr>
-<tr class="even">
-<td>Chunk uploads per frame</td>
-<td style="text-align: right;">1</td>
-</tr>
-<tr class="odd">
-<td>Upload operations per frame</td>
-<td style="text-align: right;">1</td>
-</tr>
-<tr class="even">
-<td>Upload budget</td>
-<td style="text-align: right;">3 ms</td>
-</tr>
-</tbody>
-</table>
-<table class="docs-mobile-table--defaults">
-<thead>
-<tr class="header">
-<th>Import</th>
-<th style="text-align: right;">Default</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td>Import chunk size</td>
-<td style="text-align: right;">50</td>
-</tr>
-<tr class="even">
-<td>Max upload group size</td>
-<td style="text-align: right;">16 MB</td>
-</tr>
-<tr class="odd">
-<td>.obj scan throttle</td>
-<td style="text-align: right;">0 ms on macOS/Linux; 1 ms on Windows</td>
-</tr>
-<tr class="even">
-<td>Faces per .obj batch</td>
-<td style="text-align: right;">200 thousand</td>
-</tr>
-<tr class="odd">
-<td>Cache-building worker limit</td>
-<td style="text-align: right;">1</td>
-</tr>
-<tr class="even">
-<td>Cache-build CPUs to keep free</td>
-<td style="text-align: right;">2</td>
-</tr>
-</tbody>
-</table>
-<p>After restoring Import defaults, rebuild a map only if you previously
-rebuilt it with different Import settings. Streaming defaults take
-effect without rebuilding the cache.</p>
+<h3 id="getting-help">Getting Help</h3>
+<p>Open <strong>Help</strong> and choose the <strong>Troubleshooting</strong> tab to inspect the latest application log. Copy any error message you find, then include it with a short description of the problem when you <a href="contact.html">contact support</a>.</p>
+<figure class="docs-figure">
+<picture>
+<source type="image/webp" srcset="assets/images/features/help-troubleshooting-800.webp 800w, assets/images/features/help-troubleshooting-1600.webp 1600w" sizes="(max-width: 960px) calc(100vw - 48px), 880px">
+<img src="assets/images/features/help-troubleshooting.png" width="2420" height="1634" loading="lazy" decoding="async" alt="CaveViewer Help with the Troubleshooting tab selected, showing the latest application log and last error controls">
+</picture>
+</figure>
 
             </article>
         </div>
     </section>
 </main>
-<footer class="site-endcap"><div class="site-endcap__inner"><span class="site-endcap__copyright">&copy; 2026 CaveViewer</span><a class="site-endcap__partner" href="https://www.bottomlineprojects.com/">Bottomline Projects, Florida Chapter</a><img class="site-endcap__logo" src="assets/icons/caveviewer-cave-profile.svg" width="64" height="32" alt=""></div></footer>
+<footer class="site-endcap"><div class="site-endcap__inner"><span class="site-endcap__copyright">&copy; 2026 CaveViewer</span><a class="site-endcap__partner" href="https://www.bottomlineprojects.com/">Bottomline Projects, Florida Chapter</a></div></footer>
 <script src="assets/js/app.js?v=20260826" defer></script>
 </body>
 </html>

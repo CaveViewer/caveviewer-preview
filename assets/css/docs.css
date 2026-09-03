@@ -235,10 +235,8 @@
     .docs-mobile-table--recommendations td:nth-child(1)::before { content: "What you notice"; }
     .docs-mobile-table--recommendations td:nth-child(2)::before { content: "Change first"; }
     .docs-mobile-table--recommendations td:nth-child(3)::before { content: "Direction"; }
-    .docs-mobile-table--settings td:nth-child(1)::before,
-    .docs-mobile-table--defaults td:nth-child(1)::before { content: "Setting"; }
-    .docs-mobile-table--settings td:nth-child(2)::before,
-    .docs-mobile-table--defaults td:nth-child(2)::before { content: "Default"; }
+    .docs-mobile-table--settings td:nth-child(1)::before { content: "Setting"; }
+    .docs-mobile-table--settings td:nth-child(2)::before { content: "Default"; }
     .docs-mobile-table--settings td:nth-child(3)::before { content: "What it controls"; }
     .docs-mobile-table--settings td:nth-child(4)::before { content: "Guidance"; }
 }

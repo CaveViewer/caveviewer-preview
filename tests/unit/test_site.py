@@ -485,6 +485,7 @@ def test_preview_uses_one_header_and_has_no_member_profile_routes() -> None:
 
         assert text.count('class="site-home"') == 1
         assert 'href="index.html" aria-label="CaveViewer home"><img' in text
+        assert 'src="assets/icons/caveviewer-logo.svg" width="64" height="32"' in text
         assert '<nav class="primary-nav" aria-label="Primary navigation">' in text
         nav_start = text.index(
             '<nav class="primary-nav" aria-label="Primary navigation">'
@@ -554,11 +555,32 @@ def test_preview_uses_one_header_and_has_no_member_profile_routes() -> None:
     assert ">System RAM target<" in docs
     assert ">Import chunk size<" in docs
     assert "Rebuild cache" in docs
-    assert docs.count('<figure class="docs-figure">') == 2
+    assert docs.count('<figure class="docs-figure">') == 4
     assert "preferences-import-800.webp" in docs
     assert "preferences-import-1600.webp" in docs
+    assert (
+        '<img src="assets/images/features/preferences-import.png" '
+        'width="2420" height="1634"' in docs
+    )
     assert "preferences-streaming-800.webp" in docs
     assert "preferences-streaming-1600.webp" in docs
+    assert (
+        '<img src="assets/images/features/preferences-streaming.png" '
+        'width="2420" height="1634"' in docs
+    )
+    assert "preferences-backup-800.webp" in docs
+    assert "preferences-backup-1600.webp" in docs
+    assert "help-troubleshooting-800.webp" in docs
+    assert "help-troubleshooting-1600.webp" in docs
+    assert 'id="getting-help"' in docs
+    assert "Copy any error message you find" in docs
+    assert '<a href="contact.html">contact support</a>' in docs
+    assert (
+        "Don’t worry about messing up your preferences—you can always save, "
+        "import, and restore them in the app. Note that platform-specific settings, "
+        "such as directory paths, will not be restored."
+    ) in docs
+    assert "docs-mobile-table--defaults" not in docs
     assert docs.count("<h2 ") == 9
     assert docs.index('id="system-requirements"') < docs.index('id="installation"')
     assert docs.index('id="installation"') < docs.index('id="before-you-change-anything"')
@@ -566,6 +588,9 @@ def test_preview_uses_one_header_and_has_no_member_profile_routes() -> None:
     assert docs.index('id="quick-recommendations"') < docs.index('id="import-settings"') < docs.index('id="streaming-settings"')
     assert docs.index('id="import-settings"') < docs.index("preferences-import-800.webp") < docs.index('id="streaming-settings"')
     assert docs.index('id="streaming-settings"') < docs.index("preferences-streaming-800.webp")
+    assert docs.index('id="streaming-settings"') < docs.index('id="restore-the-defaults"') < docs.index('id="troubleshooting-by-symptom"')
+    assert docs.index('id="restore-the-defaults"') < docs.index("preferences-backup-800.webp") < docs.index('id="troubleshooting-by-symptom"')
+    assert docs.index('id="troubleshooting-by-symptom"') < docs.index('id="getting-help"') < docs.index("help-troubleshooting-800.webp")
     assert "Microsoft does not yet recognize its publisher" in docs
     assert "Apple does not yet recognize its developer" in docs
     assert "Linux does not display an equivalent publisher-verification warning" in docs
@@ -678,7 +703,7 @@ def test_advantage_section_uses_the_real_preferences_and_capabilities() -> None:
         "rendering-engine-1600.webp",
         "map-library-1600.webp",
         "capture-recording-1600.webp",
-        "preferences-streaming-1600.webp",
+        "advantage-streaming-1600.webp",
     ):
         assert text in advantage
 
@@ -848,14 +873,16 @@ def test_image_delivery_uses_responsive_webp_and_reserves_layout_space() -> None
                 "assets/images/features/rendering-engine-1600.webp",
                 "assets/images/features/map-library-1600.webp",
                 "assets/images/features/capture-recording-1600.webp",
-                "assets/images/features/preferences-streaming-1600.webp",
+                "assets/images/features/advantage-streaming-1600.webp",
             ),
         ),
         "Documentation": (
-            120_000,
+            130_000,
             (
                 "assets/images/features/preferences-import-1600.webp",
                 "assets/images/features/preferences-streaming-1600.webp",
+                "assets/images/features/preferences-backup-1600.webp",
+                "assets/images/features/help-troubleshooting-1600.webp",
             ),
         ),
         "Team": (
@@ -886,13 +913,15 @@ def test_image_delivery_uses_responsive_webp_and_reserves_layout_space() -> None
     assert "picture`/`srcset`" in readme
     assert "`image-set`" in readme
     assert "Six responsive portrait WebP images" in readme
+    assert "Import, Streaming, Backup, and Troubleshooting WebP images" in readme
     assert "KISS Rebreathers and XDEEP logo WebP images" in readme
     assert "two privacy-enhanced YouTube embeds" in readme
 
     assert "ginnie1.webp" in home_styles
     assert "software-hero-cave-strokes-full.webp" in home_styles
     assert "image-set(" in home_styles
-    assert 'width="64" height="32"' in index
+    assert (SITE_ROOT / "assets/icons/caveviewer-logo.svg").is_file()
+    assert 'src="assets/icons/caveviewer-logo.svg" width="64" height="32"' in index
 
     assert advantage.count("<picture>") == 4
     for source in (
@@ -902,11 +931,19 @@ def test_image_delivery_uses_responsive_webp_and_reserves_layout_space() -> None
         "map-library-1600.webp",
         "capture-recording-800.webp",
         "capture-recording-1600.webp",
-        "preferences-streaming-800.webp",
-        "preferences-streaming-1600.webp",
+        "advantage-streaming-800.webp",
+        "advantage-streaming-1600.webp",
     ):
         assert source in advantage
     assert 'width="2558" height="1556" loading="eager" fetchpriority="high"' in advantage
+    assert (
+        '<img src="assets/images/features/advantage-streaming.png" '
+        'width="2420" height="1634"' in advantage
+    )
+    assert (
+        '<img src="assets/images/features/map-library.png" '
+        'width="2420" height="1634"' in advantage
+    )
     assert advantage.count('loading="lazy" decoding="async"') == 3
     assert ".feature-section__visual picture" in feature_styles
 

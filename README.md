@@ -97,7 +97,7 @@ supplies intrinsic dimensions to reserve layout space before images load.
 | --- | --- | ---: |
 | Home | `ginnie1.webp`, `software-hero-cave-strokes-full.webp` | 1.30 MB |
 | Why CaveViewer | Rendering, Map Library, Capture, and Streaming WebP images | 0.45 MB |
-| Documentation | Import and Streaming preference WebP images | 0.12 MB |
+| Documentation | Import, Streaming, Backup, and Troubleshooting WebP images | 0.13 MB |
 | Team | Six responsive portrait WebP images | 0.80 MB |
 | Sponsors | KISS Rebreathers and XDEEP logo WebP images | 0.05 MB |
 | Projects | No local image assets; two privacy-enhanced YouTube embeds | — |
